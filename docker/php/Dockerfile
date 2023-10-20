@@ -20,7 +20,8 @@ RUN apk --update --no-cache add \
 
 RUN pecl install redis
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd zip
+RUN docker-php-ext-configure intl
+RUN docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd zip intl
 RUN docker-php-ext-enable redis
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
