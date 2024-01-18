@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "87114faff5dd85ceddc53ea0df3aad77",
+    "content-hash": "0793ba2e2d02ed279ea94013f4b6d77a",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -7038,16 +7038,16 @@
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v6.3.5",
+            "version": "v6.3.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "3d9999376be5fea8de47752837a3e1d1c5f69ef5"
+                "reference": "376d3c652c17c33d88db7a7e2e5288ecf3e327dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/3d9999376be5fea8de47752837a3e1d1c5f69ef5",
-                "reference": "3d9999376be5fea8de47752837a3e1d1c5f69ef5",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/376d3c652c17c33d88db7a7e2e5288ecf3e327dc",
+                "reference": "376d3c652c17c33d88db7a7e2e5288ecf3e327dc",
                 "shasum": ""
             },
             "require": {
@@ -7102,7 +7102,7 @@
                 "dump"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-dumper/tree/v6.3.5"
+                "source": "https://github.com/symfony/var-dumper/tree/v6.3.11"
             },
             "funding": [
                 {
@@ -7118,7 +7118,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-09-12T10:11:35+00:00"
+            "time": "2023-12-28T15:37:35+00:00"
         },
         {
             "name": "symfony/var-exporter",
