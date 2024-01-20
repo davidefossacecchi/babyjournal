@@ -2,6 +2,7 @@ security:
 
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        common: 'bcrypt'
 
     providers:
         app_user_provider:
@@ -26,7 +27,7 @@ security:
                 path: logout
 
     access_control:
-        - path: ^/(login|register|signup)
+        - path: ^/(login|register|signup|password-reset|password-recovery)
           roles: PUBLIC_ACCESS
         - path: ^/
           roles: IS_AUTHENTICATED_FULLY

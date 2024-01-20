@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -36,6 +38,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\Regex(pattern: '/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[$+%&:\-!?]).{8,}/', message: 'Invalid password, it must contains an uppercase character, a lower case character, a digit and a symbol between $, +, %, &, :, -, !, and ?')]
     private ?string $plainPassword;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: AuthToken::class)]
+    private Collection $authTokens;
+
+    public function __construct()
+    {
+        $this->authTokens = new ArrayCollection();
+    }
 
     public function getId(): int
     {
@@ -107,5 +117,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return $this->getEmail();
+    }
+
+    public function getAuthTokens(): Collection
+    {
+        return $this->authTokens;
+    }
+
+    public function addAuthToken(AuthToken $authToken): User
+    {
+        if (false === $this->authTokens->contains($authToken)) {
+            $this->authTokens->add($authToken);
+            $authToken->setUser($this);
+        }
+        return $this;
     }
 }
