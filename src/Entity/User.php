@@ -42,9 +42,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: AuthToken::class)]
     private Collection $authTokens;
 
+    #[ORM\ManyToMany(targetEntity: Family::class, mappedBy: 'users')]
+    private Collection $families;
+
     public function __construct()
     {
         $this->authTokens = new ArrayCollection();
+        $this->families = new ArrayCollection();
     }
 
     public function getId(): int
@@ -129,6 +133,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if (false === $this->authTokens->contains($authToken)) {
             $this->authTokens->add($authToken);
             $authToken->setUser($this);
+        }
+        return $this;
+    }
+
+    public function getFamilies(): Collection
+    {
+        return $this->families;
+    }
+
+    public function addFamily(Family $family): User
+    {
+        if(false === $this->families->contains($family)) {
+            $this->families->add($family);
+            $family->addUser($this);
+        }
+        return $this;
+    }
+
+    public function removeFamily(Family $family): User
+    {
+        if ($this->families->removeElement($family)) {
+            $family->removeUser($this);
         }
         return $this;
     }
