@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% if family is defined %}
+    {% set title = 'Modifica "'~family.name~'"' %}
+    {% set action = path('family_edit', {id: family.id}) %}
+{% else %}
+    {% set title = 'Nuova famiglia' %}
+    {% set action = path('family_create') %}
+{% endif %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-lg-4 col-sm-6">
+            <h2>{{ title }}</h2>
+            <div class="card">
+                <div class="card-body">
+                    {{ form(form, {action: action, method: 'POST'}) }}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}

@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-
+use Symfony\Component\Validator\Constraints;
 #[ORM\Entity]
 class Family
 {
@@ -18,6 +18,7 @@ class Family
     private int $id;
 
     #[ORM\Column(type: Types::STRING, length: 50)]
+    #[Constraints\NotBlank]
     private string $name;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'families')]
