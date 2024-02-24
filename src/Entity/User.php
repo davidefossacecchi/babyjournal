@@ -45,6 +45,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Family::class, mappedBy: 'users')]
     private Collection $families;
 
+    #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'author')]
+    private Collection $posts;
+
     public function __construct()
     {
         $this->authTokens = new ArrayCollection();
@@ -116,8 +119,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
-
     public function getUserIdentifier(): string
     {
         return $this->getEmail();
@@ -156,6 +157,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->families->removeElement($family)) {
             $family->removeUser($this);
         }
+        return $this;
+    }
+
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): User
+    {
+        if (false === $this->posts->contains($post)) {
+            $this->posts->add($post);
+            $post->setAuthor($this);
+        }
+        return $this;
+    }
+
+    public function removePost(Post $post): User
+    {
+        $this->posts->removeElement($post);
         return $this;
     }
 }

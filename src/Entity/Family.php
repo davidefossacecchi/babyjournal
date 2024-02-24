@@ -25,9 +25,13 @@ class Family
     #[ORM\JoinTable(name: 'users_families')]
     private Collection $users;
 
+    #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'family')]
+    private Collection $posts;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->posts = new ArrayCollection();
     }
 
     public function getId(): int
@@ -71,6 +75,26 @@ class Family
         if ($this->users->removeElement($user)) {
             $user->removeFamily($this);
         }
+        return $this;
+    }
+
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): User
+    {
+        if (false === $this->posts->contains($post)) {
+            $this->posts->add($post);
+            $post->setFamily($this);
+        }
+        return $this;
+    }
+
+    public function removePost(Post $post): User
+    {
+        $this->posts->removeElement($post);
         return $this;
     }
 }
