@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-lg-4 col-sm-6">
+            <h2>Nuovo post</h2>
+            <div class="card">
+                <div class="card-body">
+                    {{ form(form, {method: 'POST'}) }}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}

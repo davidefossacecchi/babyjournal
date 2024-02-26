@@ -86,4 +86,15 @@ class Post
         $this->family->addPost($this);
         return $this;
     }
+
+    public function getCaption(): string
+    {
+        return $this->caption;
+    }
+
+    public function setCaption(string $caption): Post
+    {
+        $this->caption = $caption;
+        return $this;
+    }
 }

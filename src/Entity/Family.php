@@ -83,7 +83,7 @@ class Family
         return $this->posts;
     }
 
-    public function addPost(Post $post): User
+    public function addPost(Post $post): Family
     {
         if (false === $this->posts->contains($post)) {
             $this->posts->add($post);
@@ -92,7 +92,7 @@ class Family
         return $this;
     }
 
-    public function removePost(Post $post): User
+    public function removePost(Post $post): Family
     {
         $this->posts->removeElement($post);
         return $this;
