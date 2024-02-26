@@ -26,6 +26,7 @@ class Family
     private Collection $users;
 
     #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'family')]
+    #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $posts;
 
     public function __construct()

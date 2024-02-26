@@ -7,6 +7,7 @@ use App\Entity\Post;
 use App\Form\PostType;
 use App\Post\PostImageManagerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -55,6 +56,25 @@ class PostController extends AbstractController
     #[IsGranted('view', 'family')]
     public function indexAction(Family $family)
     {
-        return $this->render('family/posts.html.twig');
+        return $this->render('family/posts.html.twig', ['posts' => $family->getPosts()]);
+    }
+
+    #[Route(name: 'post_image', path: '/post-image/{filename}')]
+    public function getImageAction(string $filename, EntityManagerInterface $em, PostImageManagerInterface $imageManager)
+    {
+        $repo = $em->getRepository(Post::class);
+        $post = $repo->findOneBy(['imagePath' => $filename, 'author' => $this->getUser()]);
+
+        if (empty($post)) {
+            throw $this->createNotFoundException();
+        }
+
+        if (false === $this->isGranted('view', $post->getFamily())) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $imagePath = $imageManager->getImageFolder($filename).'/'.$filename;
+
+        return new BinaryFileResponse($imagePath);
     }
 }
