@@ -12,6 +12,7 @@
         {% endblock %}
     </head>
     <body>
+        {% block navbar %}{% endblock %}
         <div class="container-fluid">
             {% for message in app.flashes('success') %}
                 <div class="alert alert-success">

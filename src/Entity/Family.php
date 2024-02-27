@@ -29,10 +29,14 @@ class Family
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $posts;
 
+    #[ORM\OneToMany(targetEntity: Child::class, mappedBy: 'family')]
+    private Collection $children;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->posts = new ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
     public function getId(): int
@@ -97,5 +101,24 @@ class Family
     {
         $this->posts->removeElement($post);
         return $this;
+    }
+
+    public function getChildren(): Collection
+    {
+        return $this->children;
+    }
+
+    public function addChild(Child $child): Family
+    {
+        if (false === $this->children->contains($child)) {
+            $this->children->add($child);
+            $child->setFamily($this);
+        }
+        return $this;
+    }
+
+    public function removeChild(Child $child)
+    {
+        $this->children->removeElement($child);
     }
 }
