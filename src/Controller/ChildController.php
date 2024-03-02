@@ -19,6 +19,7 @@ class ChildController extends AbstractController
     public function create(Request $request, Family $family, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(ChildType::class);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
