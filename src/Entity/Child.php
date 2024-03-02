@@ -23,7 +23,7 @@ class Child
     #[Assert\LessThanOrEqual('today')]
     private \DateTimeImmutable $birthDate;
 
-    #[ORM\ManyToOne(targetEntity: Child::class, inversedBy: 'children')]
+    #[ORM\ManyToOne(targetEntity: Family::class, inversedBy: 'children')]
     private Family $family;
 
     public function getId(): int

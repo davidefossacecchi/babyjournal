@@ -56,7 +56,7 @@ class PostController extends AbstractController
     #[IsGranted('view', 'family')]
     public function indexAction(Family $family)
     {
-        return $this->render('family/posts.html.twig', ['posts' => $family->getPosts()]);
+        return $this->render('family/posts.html.twig', ['posts' => $family->getPosts(), 'familyId' => $family->getId()]);
     }
 
     #[Route(name: 'post_image', path: '/post-image/{filename}')]

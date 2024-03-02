@@ -2,7 +2,9 @@
 {% block navbar %}
     <nav class="navbar sticky-top navbar-light bg-light">
         <div class="container justify-content-end">
-            <button type="button">Ciccia</button>
+            <a class="btn btn-primary" href="{{ path('create_child', {id: familyId}) }}">
+                + Bimbo
+            </a>
         </div>
     </nav>
 {% endblock %}
