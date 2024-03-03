@@ -1,20 +1,16 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Timepoints;
 
+use App\Entity\Family;
+use App\Entity\User;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping\Entity;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Doctrine\ORM\Mapping as ORM;
-#[Entity]
-class Post
-{
-    use TimestampableEntity;
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: Types::INTEGER)]
-    private int $id;
 
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
+class Post extends TimePoint
+{
     #[ORM\Column(type: Types::STRING, length: 1024)]
     private string $imagePath;
 
@@ -29,17 +25,6 @@ class Post
 
     #[ORM\ManyToOne(inversedBy: 'posts', targetEntity: Family::class)]
     private Family $family;
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function setId(int $id): Post
-    {
-        $this->id = $id;
-        return $this;
-    }
 
     public function getImagePath(): string
     {
@@ -96,5 +81,11 @@ class Post
     {
         $this->caption = $caption;
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function setNowDate()
+    {
+        $this->setDate(new \DateTimeImmutable());
     }
 }

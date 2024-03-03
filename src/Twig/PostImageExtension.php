@@ -2,9 +2,9 @@
 
 namespace App\Twig;
 
+use App\Entity\Timepoints\Post;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Extension\AbstractExtension;
-use App\Entity\Post;
 use Twig\TwigFunction;
 
 class PostImageExtension extends AbstractExtension

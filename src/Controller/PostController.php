@@ -3,13 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Family;
-use App\Entity\Post;
+use App\Entity\Timepoints\Post;
 use App\Form\PostType;
 use App\Post\PostImageManagerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 

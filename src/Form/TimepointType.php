@@ -2,9 +2,9 @@
 
 namespace App\Form;
 
-use App\Entity\BodyTemperature;
-use App\Entity\Height;
-use App\Entity\Weight;
+use App\Entity\Timepoints\BodyTemperature;
+use App\Entity\Timepoints\Height;
+use App\Entity\Timepoints\Weight;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
