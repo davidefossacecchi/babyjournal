@@ -23,8 +23,7 @@ class Post extends TimePoint
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'posts')]
     private User $author;
 
-    #[ORM\ManyToOne(inversedBy: 'posts', targetEntity: Family::class)]
-    private Family $family;
+
 
     public function getImagePath(): string
     {

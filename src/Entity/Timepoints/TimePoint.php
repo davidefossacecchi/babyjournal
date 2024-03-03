@@ -2,6 +2,9 @@
 
 namespace App\Entity\Timepoints;
 
+use App\Entity\Child;
+use App\Entity\Family;
+use App\Repository\TimepointsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;
@@ -10,10 +13,11 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[Entity]
+#[Entity(repositoryClass: TimepointsRepository::class)]
 #[InheritanceType('SINGLE_TABLE')]
 #[DiscriminatorColumn(name: 'type', type: Types::STRING)]
 #[DiscriminatorMap([
@@ -33,6 +37,12 @@ abstract class TimePoint
     #[Column(type: Types::DATE_IMMUTABLE)]
     #[Assert\LessThanOrEqual('today')]
     private \DateTimeImmutable $date;
+
+    #[ManyToOne(inversedBy: 'posts', targetEntity: Family::class)]
+    protected Family $family;
+
+    #[ManyToOne(targetEntity: Child::class, inversedBy: 'timepoints')]
+    protected Child $child;
 
     public function getId(): int
     {

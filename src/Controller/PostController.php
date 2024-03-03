@@ -6,6 +6,7 @@ use App\Entity\Family;
 use App\Entity\Timepoints\Post;
 use App\Form\PostType;
 use App\Post\PostImageManagerInterface;
+use App\Repository\TimepointsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -54,9 +55,10 @@ class PostController extends AbstractController
 
     #[Route(name: 'family_posts', path: '/families/{id}/posts', methods: ['GET'])]
     #[IsGranted('view', 'family')]
-    public function indexAction(Family $family)
+    public function indexAction(Family $family, TimepointsRepository $timepointsRepository)
     {
-        return $this->render('family/posts.html.twig', ['posts' => $family->getPosts(), 'familyId' => $family->getId()]);
+        $posts = $timepointsRepository->getAllByFamily($family);
+        return $this->render('family/posts.html.twig', ['posts' => $posts, 'familyId' => $family->getId()]);
     }
 
     #[Route(name: 'post_image', path: '/post-image/{filename}')]

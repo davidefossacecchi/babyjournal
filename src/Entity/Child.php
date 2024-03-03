@@ -2,17 +2,13 @@
 
 namespace App\Entity;
 
-use App\Entity\Timepoints\BodyTemperature;
-use App\Entity\Timepoints\Height;
-use App\Entity\Timepoints\TimePoint;
-use App\Entity\Timepoints\Weight;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use Doctrine\Common\Collections\Collection;
+use App\Entity\Timepoints\TimePoint;
 #[ORM\Entity]
 class Child
 {
@@ -33,23 +29,12 @@ class Child
     #[ORM\ManyToOne(targetEntity: Family::class, inversedBy: 'children')]
     private Family $family;
 
-    #[ORM\OneToMany(mappedBy: 'child', targetEntity: BodyTemperature::class, orphanRemoval: true)]
-    #[ORM\OrderBy(['date' => 'ASC'])]
-    private Collection $bodyTemperatures;
-
-    #[ORM\OneToMany(mappedBy: 'child', targetEntity: Height::class, orphanRemoval: true)]
-    #[ORM\OrderBy(['date' => 'ASC'])]
-    private Collection $heights;
-
-    #[ORM\OneToMany(mappedBy: 'child', targetEntity: Weight::class, orphanRemoval: true)]
-    #[ORM\OrderBy(['date' => 'ASC'])]
-    private Collection $weights;
+    #[ORM\OneToMany(mappedBy: 'child', targetEntity: TimePoint::class, orphanRemoval: true)]
+    private Collection $timepoints;
 
     public function __construct()
     {
-        $this->bodyTemperatures = new ArrayCollection();
-        $this->heights = new ArrayCollection();
-        $this->weights = new ArrayCollection();
+        $this->timepoints = new ArrayCollection();
     }
     public function getId(): int
     {
@@ -96,63 +81,23 @@ class Child
         return $this;
     }
 
-    public function getBodyTemperatures(): Collection
+    public function getTimepoints(): Collection
     {
-        return $this->bodyTemperatures;
+        return $this->timepoints;
     }
 
-    public function getHeights(): Collection
+    public function addTimepoint(TimePoint $timePoint): Child
     {
-        return $this->heights;
-    }
-
-    public function getWeights(): Collection
-    {
-        return $this->weights;
-    }
-
-    public function addBodyTemperature(BodyTemperature $timePoint): Child
-    {
-        if (false === $this->bodyTemperatures->contains($timePoint)) {
-            $this->bodyTemperatures->add($timePoint);
+        if (false === $this->timepoints->contains($timePoint)) {
+            $this->timepoints->add($timePoint);
             $timePoint->setChild($this);
         }
         return $this;
     }
 
-    public function removeBodyTemperature(BodyTemperature $timePoint): Child
+    public function removeTimepoint(TimePoint $timePoint): Child
     {
-        $this->bodyTemperatures->removeElement($timePoint);
-        return $this;
-    }
-
-    public function addHeight(Height $timePoint): Child
-    {
-        if (false === $this->heights->contains($timePoint)) {
-            $this->heights->add($timePoint);
-            $timePoint->setChild($this);
-        }
-        return $this;
-    }
-
-    public function removeHeight(Height $timePoint): Child
-    {
-        $this->heights->removeElement($timePoint);
-        return $this;
-    }
-
-    public function addWeight(Weight $timePoint): Child
-    {
-        if (false === $this->weights->contains($timePoint)) {
-            $this->weights->add($timePoint);
-            $timePoint->setChild($this);
-        }
-        return $this;
-    }
-
-    public function removeWeight(Weight $timePoint): Child
-    {
-        $this->weights->removeElement($timePoint);
+        $this->timepoints->removeElement($timePoint);
         return $this;
     }
 }
