@@ -58,7 +58,7 @@ class PostController extends AbstractController
     public function indexAction(Family $family, TimepointsRepository $timepointsRepository)
     {
         $posts = $timepointsRepository->getAllByFamily($family);
-        return $this->render('family/posts.html.twig', ['posts' => $posts, 'familyId' => $family->getId()]);
+        return $this->render('family/posts.html.twig', ['timepoints' => $posts, 'familyId' => $family->getId()]);
     }
 
     #[Route(name: 'post_image', path: '/post-image/{filename}')]

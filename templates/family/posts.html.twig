@@ -11,12 +11,8 @@
 {% block body %}
     <div class="row justify-content-center pt-6">
         <div class="col-lg-4 col-sm-6">
-            {% for post in posts%}
-                <div class="row">
-                    <div class="col-xs-12">
-                        <img src="{{ post_url(post) }}"/>
-                    </div>
-                </div>
+            {% for timepoint in timepoints%}
+                <twig:Timepoint :timepoint="timepoint"/>
             {% endfor %}
         </div>
 
