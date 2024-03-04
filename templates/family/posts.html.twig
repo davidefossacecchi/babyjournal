@@ -11,7 +11,12 @@
 {% block body %}
     <div class="row justify-content-center pt-6">
         <div class="col-lg-4 col-sm-6">
+            {% set lastDate = null %}
             {% for timepoint in timepoints%}
+                {% if lastDate is empty or lastDate != timepoint.date %}
+                    {% set lastDate = timepoint.date %}
+                    {{ timepoint.date|date('d/m/Y') }}
+                {% endif %}
                 <twig:Timepoint :timepoint="timepoint"/>
             {% endfor %}
         </div>
