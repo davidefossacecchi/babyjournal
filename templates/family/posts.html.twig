@@ -5,6 +5,9 @@
             <a class="btn btn-primary" href="{{ path('create_child', {id: familyId}) }}">
                 + Bimbo
             </a>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#height-timepoint-form">
+                + Altezza
+            </button>
         </div>
     </nav>
 {% endblock %}
@@ -21,5 +24,8 @@
             {% endfor %}
         </div>
         <twig:Paginator :pagination="timepoints"/>
+        <div class="modal fade" id="height-timepoint-form" tabindex="-1">
+            <twig:HeightTimepointForm :familyId="familyId"/>
+        </div>
     </div>
 {% endblock %}

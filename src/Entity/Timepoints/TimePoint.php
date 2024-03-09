@@ -36,7 +36,7 @@ abstract class TimePoint
 
     #[Column(type: Types::DATE_IMMUTABLE)]
     #[Assert\LessThanOrEqual('today')]
-    private \DateTimeImmutable $date;
+    private ?\DateTimeImmutable $date;
 
     #[ManyToOne(inversedBy: 'posts', targetEntity: Family::class)]
     protected Family $family;
@@ -55,12 +55,12 @@ abstract class TimePoint
         return $this;
     }
 
-    public function getDate(): \DateTimeImmutable
+    public function getDate(): ?\DateTimeImmutable
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeImmutable $date): TimePoint
+    public function setDate(?\DateTimeImmutable $date): TimePoint
     {
         $this->date = $date;
         return $this;

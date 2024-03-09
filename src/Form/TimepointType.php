@@ -38,20 +38,28 @@ class TimepointType extends AbstractType
                 'child',
                 ChoiceType::class,
                 [
+                    'placeholder' => 'Scegli',
                     'choices' => $options['children'],
                     'label' => 'Bimbo/a',
                     'choice_value' => 'id',
                     'choice_label' => 'name'
                 ]
             )
-            ->add('date', DateType::class, ['label' => 'Data'])
-            ->add('notes', TextareaType::class, ['label' => 'Note'])
-            ->add('sumbit', SubmitType::class, ['label' => 'Salva']);
+            ->add('date', DateType::class, [
+                'label' => 'Data',
+                'input'  => 'datetime_immutable',
+                'widget' => 'single_text'
+            ])
+            ->add('notes', TextareaType::class, ['label' => 'Note', 'required' => false])
+            ->add('submit', SubmitType::class, ['label' => 'Salva']);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->addAllowedTypes('children', 'array');
+        $resolver->setDefaults([
+            'children' => []
+        ]);
+        $resolver->setAllowedTypes('children', ['null', 'array', \Traversable::class]);
     }
 
 }
