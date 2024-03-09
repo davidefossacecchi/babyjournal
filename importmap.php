@@ -23,6 +23,7 @@ return [
     ],
     'bootstrap/dist/css/bootstrap.min.css' => [
         'url' => 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css/+esm',
+        'preload' => true,
     ],
     '@hotwired/stimulus' => [
         'url' => 'https://cdn.jsdelivr.net/npm/@hotwired/stimulus@3.2.2/+esm',

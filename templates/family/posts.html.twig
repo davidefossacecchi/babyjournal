@@ -8,6 +8,15 @@
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#height-timepoint-form">
                 + Altezza
             </button>
+
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#weight-timepoint-form">
+                + Peso
+            </button>
+
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#temperature-timepoint-form">
+                + Temperatura
+            </button>
+
         </div>
     </nav>
 {% endblock %}
@@ -25,7 +34,13 @@
         </div>
         <twig:Paginator :pagination="timepoints"/>
         <div class="modal fade" id="height-timepoint-form" tabindex="-1">
-            <twig:HeightTimepointForm :familyId="familyId"/>
+            <twig:ChildTimepointForm :familyId="familyId" timepointType="height"/>
+        </div>
+        <div class="modal fade" id="weight-timepoint-form" tabindex="-1">
+            <twig:ChildTimepointForm :familyId="familyId" timepointType="weight"/>
+        </div>
+        <div class="modal fade" id="temperature-timepoint-form" tabindex="-1">
+            <twig:ChildTimepointForm :familyId="familyId" timepointType="bodyTemperature"/>
         </div>
     </div>
 {% endblock %}

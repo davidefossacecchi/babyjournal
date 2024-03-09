@@ -2,8 +2,10 @@
 
 namespace App\Twig\Components;
 
-use App\Entity\Family;
+use App\Entity\Timepoints\BodyTemperature;
+use App\Entity\Timepoints\ChildTimepoint;
 use App\Entity\Timepoints\Height;
+use App\Entity\Timepoints\Weight;
 use App\Form\TimepointType;
 use App\Repository\ChildrenRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,15 +18,18 @@ use Symfony\UX\LiveComponent\ComponentWithFormTrait;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
 #[AsLiveComponent]
-class HeightTimepointForm extends AbstractController
+class ChildTimepointForm extends AbstractController
 {
     use DefaultActionTrait;
     use ComponentWithFormTrait;
 
-    private ?Height $height = null;
+    private ?ChildTimepoint $timepoint = null;
 
     #[LiveProp]
     public int $familyId;
+
+    #[LiveProp]
+    public string $timepointType;
 
     public function __construct(private readonly ChildrenRepository $childrenRepository)
     {
@@ -33,26 +38,45 @@ class HeightTimepointForm extends AbstractController
 
     protected function instantiateForm(): FormInterface
     {
+        $dataClass = match ($this->timepointType) {
+            'height' => Height::class,
+            'weight' => Weight::class,
+            'bodyTemperature' => BodyTemperature::class
+        };
         return $this->createForm(
             TimepointType::class,
-            $this->height,
+            $this->timepoint,
             [
-                'data_class' => Height::class,
+                'data_class' => $dataClass,
                 'children' => $this->childrenRepository->findByFamilyId($this->familyId)
             ]
         );
     }
 
+    public function getTitle(): string
+    {
+        return match ($this->timepointType) {
+            'height' => 'Aggiungi altezza',
+            'weight' => 'Aggiungi peso',
+            'bodyTemperature' => 'Aggiungi temperatura corporea'
+        };
+    }
     #[LiveAction]
     public function save(EntityManagerInterface $entityManager)
     {
         $this->submitForm();
 
-        $height = $this->getForm()->getData();
-        $entityManager->persist($height);
+        $timepoint = $this->getForm()->getData();
+        $entityManager->persist($timepoint);
         $entityManager->flush();
 
-        $this->addFlash('success', 'Altezza aggiunta');
+        $flashMessagge = match ($this->timepointType) {
+            'height' => 'Altezza aggiunta',
+            'weight' => 'Peso aggiunto',
+            'bodyTemperature' => 'Temperatura aggiunta'
+        };
+
+        $this->addFlash('success', $flashMessagge);
 
         return $this->redirectToRoute('family_posts', ['id' => $this->familyId]);
     }
