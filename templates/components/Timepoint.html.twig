@@ -6,6 +6,8 @@
             {{ timepoint.child.name }} misurava {{ timepoint.value }} cm
         {% elseif timepoint is weight %}
             {{ timepoint.child.name }} pesava {{ timepoint.value }} kg
+        {% elseif timepoint is birthday %}
+            Nasce {{ timepoint.child.name }}
         {% else %}
             <img src="{{ post_url(timepoint) }}"/>
         {% endif %}

@@ -24,7 +24,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     'height' => Height::class,
     'weight' => Weight::class,
     'body_temperature' => BodyTemperature::class,
-    'post' => Post::class
+    'post' => Post::class,
+    'birthday' => Birthday::class
 ])]
 abstract class TimePoint
 {

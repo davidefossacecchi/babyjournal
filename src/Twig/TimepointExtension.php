@@ -2,6 +2,7 @@
 
 namespace App\Twig;
 
+use App\Entity\Timepoints\Birthday;
 use App\Entity\Timepoints\BodyTemperature;
 use App\Entity\Timepoints\Height;
 use App\Entity\Timepoints\Weight;
@@ -17,7 +18,8 @@ class TimepointExtension extends AbstractExtension
         return [
             new TwigTest('bodyTemperature', fn (TimePoint $t) => $t instanceof BodyTemperature),
             new TwigTest('height', fn (TimePoint $t) => $t instanceof Height),
-            new TwigTest('weight', fn (TimePoint $t) => $t instanceof Weight)
+            new TwigTest('weight', fn (TimePoint $t) => $t instanceof Weight),
+            new TwigTest('birthday', fn (TimePoint $t) => $t instanceof Birthday),
         ];
     }
 
