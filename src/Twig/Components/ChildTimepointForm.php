@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
+use Symfony\UX\LiveComponent\ComponentToolsTrait;
 use Symfony\UX\LiveComponent\ComponentWithFormTrait;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
@@ -22,6 +23,7 @@ class ChildTimepointForm extends AbstractController
 {
     use DefaultActionTrait;
     use ComponentWithFormTrait;
+    use ComponentToolsTrait;
 
     private ?ChildTimepoint $timepoint = null;
 
@@ -76,8 +78,9 @@ class ChildTimepointForm extends AbstractController
             'bodyTemperature' => 'Temperatura aggiunta'
         };
 
-        $this->addFlash('success', $flashMessagge);
+        $this->addFlash('feed:success', $flashMessagge);
 
-        return $this->redirectToRoute('family_posts', ['id' => $this->familyId]);
+        $this->emit('timepointAdded');
+        $this->dispatchBrowserEvent('modal:close');
     }
 }

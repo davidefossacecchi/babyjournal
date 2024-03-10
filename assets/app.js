@@ -1,5 +1,5 @@
 import './bootstrap.js';
-import 'bootstrap';
+import * as bootstrap from 'bootstrap';
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -7,4 +7,10 @@ import 'bootstrap';
  * which should already be in your base.html.twig.
  */
 import 'bootstrap/dist/css/bootstrap.min.css';
-console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉')
+
+document.addEventListener('modal:close', () => {
+	const openModals = document.querySelectorAll('.modal.show');
+	for (const openModal of openModals) {
+		bootstrap.Modal.getInstance(openModal).hide();
+	}
+})

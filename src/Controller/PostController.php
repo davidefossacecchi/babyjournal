@@ -55,10 +55,15 @@ class PostController extends AbstractController
 
     #[Route(name: 'family_posts', path: '/families/{id}/posts', methods: ['GET'])]
     #[IsGranted('view', 'family')]
-    public function indexAction(Family $family, TimepointsRepository $timepointsRepository)
+    public function indexAction(Request $request, Family $family, string $pageParam)
     {
-        $posts = $timepointsRepository->getAllByFamily($family);
-        return $this->render('family/posts.html.twig', ['timepoints' => $posts, 'familyId' => $family->getId()]);
+        return $this->render(
+            'family/posts.html.twig',
+            [
+                'family' => $family,
+                'page' => $request->query->getInt($pageParam, 1)
+            ]
+        );
     }
 
     #[Route(name: 'post_image', path: '/post-image/{filename}')]

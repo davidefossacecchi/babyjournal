@@ -1,0 +1,24 @@
+<div {{ attributes }} class="row justify-content-center pt-6">
+    <div class="col-lg-4 col-sm-6">
+        {% for message in app.flashes('feed:success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('feed:success') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% set lastDate = null %}
+        {% for timepoint in timepoints%}
+            {% if lastDate is empty or lastDate != timepoint.date %}
+                {% set lastDate = timepoint.date %}
+                {{ timepoint.date|date('d/m/Y') }}
+            {% endif %}
+            <twig:Timepoint :key="timepoint.id" :timepoint="timepoint"/>
+        {% endfor %}
+    </div>
+    <twig:Paginator :pagination="timepoints"/>
+</div>

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% set familyId = family.id %}
 {% block navbar %}
     <nav class="navbar sticky-top navbar-light bg-light">
         <div class="container justify-content-end">
@@ -21,26 +22,18 @@
     </nav>
 {% endblock %}
 {% block body %}
-    <div class="row justify-content-center pt-6">
-        <div class="col-lg-4 col-sm-6">
-            {% set lastDate = null %}
-            {% for timepoint in timepoints%}
-                {% if lastDate is empty or lastDate != timepoint.date %}
-                    {% set lastDate = timepoint.date %}
-                    {{ timepoint.date|date('d/m/Y') }}
-                {% endif %}
-                <twig:Timepoint :timepoint="timepoint"/>
-            {% endfor %}
-        </div>
-        <twig:Paginator :pagination="timepoints"/>
-        <div class="modal fade" id="height-timepoint-form" tabindex="-1">
-            <twig:ChildTimepointForm :familyId="familyId" timepointType="height"/>
-        </div>
-        <div class="modal fade" id="weight-timepoint-form" tabindex="-1">
-            <twig:ChildTimepointForm :familyId="familyId" timepointType="weight"/>
-        </div>
-        <div class="modal fade" id="temperature-timepoint-form" tabindex="-1">
-            <twig:ChildTimepointForm :familyId="familyId" timepointType="bodyTemperature"/>
-        </div>
+    <twig:TimepointsFeed
+            :family="family"
+            :page="page"
+    />
+
+    <div class="modal fade" id="height-timepoint-form" tabindex="-1">
+        <twig:ChildTimepointForm :familyId="familyId" timepointType="height"/>
+    </div>
+    <div class="modal fade" id="weight-timepoint-form" tabindex="-1">
+        <twig:ChildTimepointForm :familyId="familyId" timepointType="weight"/>
+    </div>
+    <div class="modal fade" id="temperature-timepoint-form" tabindex="-1">
+        <twig:ChildTimepointForm :familyId="familyId" timepointType="bodyTemperature"/>
     </div>
 {% endblock %}

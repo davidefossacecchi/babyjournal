@@ -23,6 +23,8 @@ class Pagination extends ArrayCollection
 
     public function getMaxPage(): int
     {
-        return ceil($this->getMaxResults() / $this->getPageLength());
+        return 0 < $this->getPageLength()
+            ? ceil($this->getMaxResults() / $this->getPageLength())
+            : 0;
     }
 }

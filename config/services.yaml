@@ -10,7 +10,7 @@ services:
     _defaults:
         bind:
             $postImageFolder: '%app.post_image_folder%'
-            $pageLength: 24
+            $pageLength: 25
             $pageParam: 'page'
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
