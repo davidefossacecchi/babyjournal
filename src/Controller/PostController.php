@@ -66,11 +66,11 @@ class PostController extends AbstractController
         );
     }
 
-    #[Route(name: 'post_image', path: '/post-image/{filename}')]
-    public function getImageAction(string $filename, EntityManagerInterface $em, PostImageManagerInterface $imageManager)
+    #[Route(name: 'post_image', path: '/post-image/{hash}/{filename}')]
+    public function getImageAction(string $filename, string $hash, EntityManagerInterface $em, PostImageManagerInterface $imageManager)
     {
         $repo = $em->getRepository(Post::class);
-        $post = $repo->findOneBy(['imagePath' => $filename, 'author' => $this->getUser()]);
+        $post = $repo->findOneBy(['imagePath' => $filename, 'hash' => $hash]);
 
         if (empty($post)) {
             throw $this->createNotFoundException();

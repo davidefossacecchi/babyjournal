@@ -23,6 +23,6 @@ class PostImageExtension extends AbstractExtension
 
     public function getPublicUrl(Post $post): string
     {
-        return $this->generator->generate('post_image', ['filename' => $post->getImagePath(), '_' => $post->getHash()]);
+        return $this->generator->generate('post_image', ['filename' => $post->getImagePath(), 'hash' => $post->getHash()]);
     }
 }
