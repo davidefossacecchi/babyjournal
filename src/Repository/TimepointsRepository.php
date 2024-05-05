@@ -46,14 +46,14 @@ class TimepointsRepository extends ServiceEntityRepository
 
 
         $records = $this->createQueryBuilder('tp')
-            ->andWhere()
             ->where('tp INSTANCE OF '.Post::class.' AND tp.family = :family')
             ->orWhere('tp NOT INSTANCE OF '.Post::class.' AND tp.child IN (:children)')
             ->andWhere('tp.date IN (:dates)')
             ->setParameter('children', $family->getChildren())
             ->setParameter('family', $family)
             ->setParameter('dates', $dates)
-            ->orderBy('tp.date', 'desc')
+            ->addOrderBy('tp.date', 'desc')
+            ->addOrderBy('tp.id', 'desc')
             ->getQuery()
             ->getResult();
 

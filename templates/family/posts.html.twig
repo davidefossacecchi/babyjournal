@@ -17,6 +17,9 @@
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#temperature-timepoint-form">
                 + Temperatura
             </button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#post-form">
+                + Ricordo
+            </button>
 
         </div>
     </nav>
@@ -35,5 +38,8 @@
     </div>
     <div class="modal fade" id="temperature-timepoint-form" tabindex="-1">
         <twig:ChildTimepointForm :familyId="familyId" timepointType="bodyTemperature"/>
+    </div>
+    <div class="modal fade" id="post-form" tabindex="-1">
+        <twig:PostForm :familyId="familyId"/>
     </div>
 {% endblock %}

@@ -32,7 +32,7 @@ class PostController extends AbstractController
         $postForm->handleRequest($request);
 
         if($postForm->isSubmitted() && $postForm->isValid()) {
-            $image = $postForm->get('image')->getData();;
+            $image = $postForm->get('image')->getData();
 
             if ($image) {
                 $hash = $imageManager->getHash($image);

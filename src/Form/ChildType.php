@@ -22,7 +22,10 @@ class ChildType extends AbstractType
                 [
                     'label' => 'Data di nascita',
                     'required' => true,
-                    'input' => 'datetime_immutable'
+                    'input' => 'datetime_immutable',
+                    'empty_data' => new \DateTimeImmutable(),
+                    'widget' => 'single_text',
+                    'years' => range((int) date('Y') - 18, date('Y'))
                 ])
             ->add('submit', SubmitType::class, ['label' => 'Aggiungi']);
     }

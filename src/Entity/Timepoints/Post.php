@@ -18,7 +18,7 @@ class Post extends TimePoint
     private string $hash;
 
     #[ORM\Column(type: Types::STRING, length: 1024)]
-    private string $caption;
+    private string $caption = '';
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'posts')]
     private User $author;
