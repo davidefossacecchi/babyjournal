@@ -59,6 +59,7 @@ class PostForm extends AbstractController
         $post->setFamily($family)
             ->setAuthor($this->getUser())
             ->setImagePath($filename)
+            ->setCaption($this->caption)
             ->setHash($hash);
 
         $entityManager->persist($post);
