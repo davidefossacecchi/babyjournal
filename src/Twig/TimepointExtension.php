@@ -13,7 +13,7 @@ use Twig\TwigTest;
 class TimepointExtension extends AbstractExtension
 {
 
-    public function getTests()
+    public function getTests(): array
     {
         return [
             new TwigTest('bodyTemperature', fn (TimePoint $t) => $t instanceof BodyTemperature),

@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class Pagination extends ArrayCollection
 {
-    public function __construct(array $elements = [], private int $maxResults, private int $pageLength)
+    public function __construct(array $elements, private int $maxResults, private int $pageLength)
     {
         parent::__construct($elements);
     }

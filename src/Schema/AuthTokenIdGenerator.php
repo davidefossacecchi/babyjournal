@@ -7,7 +7,7 @@ use Doctrine\ORM\Id\AbstractIdGenerator;
 
 class AuthTokenIdGenerator extends AbstractIdGenerator
 {
-    public function generateId(EntityManagerInterface $em, $entity)
+    public function generateId(EntityManagerInterface $em, $entity): string
     {
         return dechex(microtime(true) * 1000000);
     }

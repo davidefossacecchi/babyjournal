@@ -14,7 +14,7 @@ use App\Entity\User;
 
 class SignupForm extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('firstName', TextType::class, [
@@ -37,7 +37,7 @@ class SignupForm extends AbstractType
             ->add('submit', SubmitType::class, ['label' => 'Registrati']);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['data_class' => User::class]);
     }

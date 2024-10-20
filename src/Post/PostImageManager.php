@@ -19,8 +19,24 @@ class PostImageManager implements PostImageManagerInterface
 
     public function getImageFolder(string $filename): string
     {
-        $firstChar = substr($filename, 0, 1);
+        $filename = trim($filename);
+        if (empty($filename)) {
+            throw new \InvalidArgumentException('Invalid filename');
+        }
 
+        $filename = pathinfo($filename, PATHINFO_FILENAME);
+
+        if (empty($filename)) {
+            throw new \InvalidArgumentException('Invalid filename');
+        }
+
+        if (preg_match('/[a-zA-Z0-9]/', $filename, $matches)) {
+            $firstChar = $matches[0];
+        } else {
+            throw new \InvalidArgumentException('Invalid filename');
+        }
+
+        $firstChar = strtolower($firstChar);
         return "{$this->postImageFolder}/{$firstChar}";
     }
 

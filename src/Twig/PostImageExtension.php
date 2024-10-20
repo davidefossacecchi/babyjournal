@@ -14,7 +14,7 @@ class PostImageExtension extends AbstractExtension
 
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('post_url', [$this, 'getPublicUrl'])

@@ -41,7 +41,7 @@ class PostForm extends AbstractController
         EntityManagerInterface $entityManager,
         PostImageManagerInterface $imageManager,
         Request $request
-    )
+    ): void
     {
         $post = new Post();
         $this->image = $request->files->get('image');

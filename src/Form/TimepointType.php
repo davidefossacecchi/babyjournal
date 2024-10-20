@@ -17,7 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TimepointType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         switch ($options['data_class']) {
             case Height::class:
@@ -55,7 +55,7 @@ class TimepointType extends AbstractType
             ->add('submit', SubmitType::class, ['label' => 'Salva']);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'children' => []
