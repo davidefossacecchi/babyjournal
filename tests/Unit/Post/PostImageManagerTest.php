@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Tests\Post;
+namespace App\Tests\Unit\Post;
 
 use App\Post\PostImageManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class PostImageManagerTest extends KernelTestCase
 {
