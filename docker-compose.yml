@@ -30,13 +30,14 @@ services:
   postgres:
     image: postgres:alpine3.18
     environment:
-      POSTGRES_DB: app
+      POSTGRES_MULTIPLE_DATABASES: "app,app:app_test,app"
       POSTGRES_USER: app
       POSTGRES_PASSWORD: nE3mkCYlg61ZI8Ii
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data:rw
+      - ./docker/postgres/init-db:/docker-entrypoint-initdb.d
   redis:
     image: redis:latest
     ports:
