@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -55,8 +56,12 @@ class PostController extends AbstractController
 
     #[Route(name: 'family_posts', path: '/families/{id}/posts', methods: ['GET'])]
     #[IsGranted('view', 'family')]
-    public function indexAction(Request $request, Family $family, string $pageParam)
+    public function indexAction(Request $request, Family $family, string $pageParam): Response
     {
+        $children = $family->getChildren();
+        if (count($children) === 0) {
+            return $this->redirectToRoute('create_child', ['id' => $family->getId()]);
+        }
         return $this->render(
             'family/posts.html.twig',
             [
