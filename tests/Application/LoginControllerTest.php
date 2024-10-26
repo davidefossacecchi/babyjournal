@@ -34,14 +34,6 @@ class LoginControllerTest extends WebTestCase
         $hasher = $container->get(UserPasswordHasherInterface::class);
         $urlGenerator = $container->get(UrlGeneratorInterface::class);
 
-        $userRepo = $entityManager->getRepository(User::class);
-        $user = $userRepo->findOneBy(['email' => 'test@example.it']);
-
-        if (isset($user)) {
-            $entityManager->remove($user);
-            $entityManager->flush();
-        }
-
         $user = new User();
         $user->setEmail('test@example.it');
         $user->setFirstName('Test');
@@ -61,7 +53,5 @@ class LoginControllerTest extends WebTestCase
 
         $redirectTo = $urlGenerator->generate('family_index', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $this->assertResponseRedirects($redirectTo);
-
-
     }
 }

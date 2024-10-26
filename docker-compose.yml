@@ -14,6 +14,7 @@ services:
     environment:
       DB_HOST: postgres
       DB_DATABASE: app
+      DB_TEST_DATABASE: app_test
       DB_USERNAME: app
       DB_PASSWORD: nE3mkCYlg61ZI8Ii
       COMPOSER_MEMORY_LIMIT: -1
