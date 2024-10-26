@@ -6,20 +6,9 @@
             <a class="btn btn-primary" href="{{ path('create_child', {id: familyId}) }}">
                 + Bimbo
             </a>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#height-timepoint-form">
-                + Altezza
-            </button>
-
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#weight-timepoint-form">
-                + Peso
-            </button>
-
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#temperature-timepoint-form">
-                + Temperatura
-            </button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#post-form">
-                + Ricordo
-            </button>
+            <a class="btn btn-primary" href="{{ path('family_create') }}">
+                + Famiglia
+            </a>
             <a class="btn btn-primary" href="{{ path('logout') }}">
                 Logout
             </a>
@@ -28,21 +17,53 @@
     </nav>
 {% endblock %}
 {% block body %}
+    <div class="row justify-content-center pt-6">
+        <div class="card col-lg-4 col-sm-6">
+            <div class="card-header">
+                <h4 class="card-title">Cosa vuoi ricordare oggi?</h4>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#post-form">
+                            Ricordo
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#weight-form">
+                            Peso
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#height-form">
+                            Altezza
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#temperature-form">
+                            Temperatura
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="post-form">
+                        <twig:PostForm :familyId="familyId"/>
+                    </div>
+                    <div class="tab-pane fade" id="weight-form">
+                        <twig:ChildTimepointForm :familyId="familyId" timepointType="weight"/>
+                    </div>
+                    <div class="tab-pane fade" id="height-form">
+                        <twig:ChildTimepointForm :familyId="familyId" timepointType="height"/>
+                    </div>
+                    <div class="tab-pane fade" id="temperature-form">
+                        <twig:ChildTimepointForm :familyId="familyId" timepointType="bodyTemperature"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <twig:TimepointsFeed
             :family="family"
             :page="page"
     />
-
-    <div class="modal fade" id="height-timepoint-form" tabindex="-1">
-        <twig:ChildTimepointForm :familyId="familyId" timepointType="height"/>
-    </div>
-    <div class="modal fade" id="weight-timepoint-form" tabindex="-1">
-        <twig:ChildTimepointForm :familyId="familyId" timepointType="weight"/>
-    </div>
-    <div class="modal fade" id="temperature-timepoint-form" tabindex="-1">
-        <twig:ChildTimepointForm :familyId="familyId" timepointType="bodyTemperature"/>
-    </div>
-    <div class="modal fade" id="post-form" tabindex="-1">
-        <twig:PostForm :familyId="familyId"/>
-    </div>
 {% endblock %}

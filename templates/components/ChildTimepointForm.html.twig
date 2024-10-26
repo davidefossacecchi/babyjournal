@@ -3,23 +3,17 @@
         attr: {
             'data-action': 'live#action:prevent',
             'data-live-action-param': 'save',
-            'class': 'modal-dialog'
         }
     }) }}
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title">{{ this.title }}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            {{ form_row(form.value) }}
-            {{ form_row(form.child) }}
-            {{ form_row(form.date) }}
-            {{ form_row(form.notes) }}
-        </div>
-        <div class="modal-footer">
+
+        {{ form_row(form.value) }}
+        {{ form_row(form.child) }}
+        {{ form_row(form.date) }}
+        {{ form_row(form.notes) }}
+
+        <div class="d-flex justify-content-end">
             {{ form_row(form.submit) }}
         </div>
-    </div>
+
     {{ form_end(form) }}
 </div>
