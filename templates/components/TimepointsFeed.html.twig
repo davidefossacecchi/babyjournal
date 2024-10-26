@@ -12,13 +12,22 @@
             </div>
         {% endfor %}
         {% set lastDate = null %}
-        {% for timepoint in timepoints%}
-            {% if lastDate is empty or lastDate != timepoint.date %}
-                {% set lastDate = timepoint.date %}
-                {{ timepoint.date|date('d/m/Y') }}
-            {% endif %}
-            <twig:Timepoint :key="timepoint.id" :timepoint="timepoint"/>
-        {% endfor %}
+        {% if timepoints|length == 0 %}
+            <div class="alert alert-info">
+                Nessun contenuto da visualizzare
+            </div>
+        {% else %}
+            {% for timepoint in timepoints%}
+                {% if lastDate is empty or lastDate != timepoint.date %}
+                    {% set lastDate = timepoint.date %}
+                    {{ timepoint.date|date('d/m/Y') }}
+                {% endif %}
+                <twig:Timepoint :key="timepoint.id" :timepoint="timepoint"/>
+            {% endfor %}
+        {% endif %}
+
     </div>
-    <twig:Paginator :pagination="timepoints"/>
+    {% if timepoints|length > 0 %}
+        <twig:Paginator :pagination="timepoints"/>
+    {% endif %}
 </div>
