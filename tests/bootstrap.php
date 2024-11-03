@@ -21,3 +21,9 @@ passthru(sprintf(
     $_ENV['APP_ENV'],
     __DIR__
 ));
+
+passthru(sprintf(
+    'APP_ENV=%s php "%s/../bin/console" doctrine:fixtures:load --no-interaction',
+    $_ENV['APP_ENV'],
+    __DIR__
+));

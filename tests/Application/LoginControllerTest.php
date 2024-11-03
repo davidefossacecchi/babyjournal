@@ -51,7 +51,7 @@ class LoginControllerTest extends WebTestCase
             '_password' => 'password',
         ]);
 
-        $redirectTo = $urlGenerator->generate('family_index', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $redirectTo = $urlGenerator->generate('index', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $this->assertResponseRedirects($redirectTo);
     }
 }
