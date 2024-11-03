@@ -10,5 +10,12 @@ down:
 	env USER_ID=$(USER_ID) GROUP_ID=$(GROUP_ID) docker-compose down --remove-orphans
 restart: down up
 build-watch:
-	docker-compose exec php bin/console sass:build --watch
+	env USER_ID=$(USER_ID) GROUP_ID=$(GROUP_ID) docker-compose exec php bin/console sass:build --watch
 
+test:
+	env USER_ID=$(USER_ID) GROUP_ID=$(GROUP_ID) docker-compose exec php bin/phpunit
+
+composer-install:
+	env USER_ID=$(USER_ID) GROUP_ID=$(GROUP_ID) docker-compose exec php composer install
+
+init: up composer-install

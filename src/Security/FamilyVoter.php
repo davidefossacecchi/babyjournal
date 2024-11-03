@@ -32,6 +32,4 @@ class FamilyVoter extends Voter
         /** @var Family $subject */
         return $subject->getUsers()->contains($user);
     }
-
-
 }
