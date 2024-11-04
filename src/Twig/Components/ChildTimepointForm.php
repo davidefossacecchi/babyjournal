@@ -2,12 +2,14 @@
 
 namespace App\Twig\Components;
 
+use App\Entity\Family;
 use App\Entity\Timepoints\BodyTemperature;
 use App\Entity\Timepoints\ChildTimepoint;
 use App\Entity\Timepoints\Height;
 use App\Entity\Timepoints\Weight;
 use App\Form\TimepointType;
 use App\Repository\ChildrenRepository;
+use App\Security\EntityAction;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -32,6 +34,7 @@ class ChildTimepointForm extends AbstractController
 
     #[LiveProp]
     public string $timepointType;
+
 
     public function __construct(private readonly ChildrenRepository $childrenRepository)
     {
@@ -64,8 +67,13 @@ class ChildTimepointForm extends AbstractController
         };
     }
     #[LiveAction]
-    public function save(EntityManagerInterface $entityManager)
+    public function save(EntityManagerInterface $entityManager): void
     {
+        $familyRepository = $entityManager->getRepository(Family::class);
+        $family = $familyRepository->find($this->familyId);
+
+        $this->denyAccessUnlessGranted(EntityAction::VIEW->value, $family);
+
         $this->submitForm();
 
         $timepoint = $this->getForm()->getData();
