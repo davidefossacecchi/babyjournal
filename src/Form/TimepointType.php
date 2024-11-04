@@ -48,8 +48,7 @@ class TimepointType extends AbstractType
             ->add('date', DateType::class, [
                 'label' => 'Data',
                 'input'  => 'datetime_immutable',
-                'widget' => 'single_text',
-                'empty_data' => new \DateTimeImmutable()
+                'widget' => 'single_text'
             ])
             ->add('notes', TextareaType::class, ['label' => 'Note', 'required' => false])
             ->add('submit', SubmitType::class, ['label' => 'Salva']);
