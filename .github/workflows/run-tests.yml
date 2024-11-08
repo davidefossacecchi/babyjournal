@@ -17,6 +17,7 @@ jobs:
         run: cp .env.ci .env
 
       - name: Retrieve composer cache
+        id: cache-primes-restore
         uses: actions/cache/restore@v4
         with:
           path: ./vendor
@@ -29,7 +30,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: ./vendor
-          key: composer-${{ hashFiles('./composer.lock') }}
+          key: ${{ steps.cache-primes-restore.outputs.cache-primary-key }}
 
       - name: Run tests
         run: make test
