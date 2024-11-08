@@ -20,7 +20,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: ./vendor
-          key: composer-${{ hashFiles('**/composer.lock') }}
+          key: composer-${{ hashFiles('./composer.lock') }}
 
       - name: Install dependencies and ups the environment
         run: make init
@@ -29,7 +29,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: ./vendor
-          key: composer-${{ hashFiles('**/composer.lock') }}
+          key: composer-${{ hashFiles('./composer.lock') }}
 
       - name: Run tests
         run: make test
