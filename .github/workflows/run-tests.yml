@@ -19,7 +19,7 @@ jobs:
       - name: Retrieve composer cache
         uses: actions/cache/restore@v4
         with:
-          path: /vendor
+          path: ./vendor
           key: composer-${{ hashFiles('**/composer.lock') }}
 
       - name: Install dependencies and ups the environment
@@ -28,7 +28,7 @@ jobs:
       - name: Save composer cache
         uses: actions/cache/save@v4
         with:
-          path: /vendor
+          path: ./vendor
           key: composer-${{ hashFiles('**/composer.lock') }}
 
       - name: Run tests
