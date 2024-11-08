@@ -13,26 +13,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Setup .env
+        run: cp .env.ci .env
+
       - name: Retrieve composer cache
         uses: actions/cache@v3
         with:
           path: /vendor
-          key: ${{ hashFiles('**/composer.lock') }}
+          key: composer-${{ hashFiles('**/composer.lock') }}
 
-      - name: Install dependencies
-        run: composer install --no-interaction --no-progress --no-suggest
+      - name: Install dependencies and ups the environment
+        run: make init
 
       - name: Save composer cache
         uses: actions/cache@v3
         with:
           path: /vendor
-          key: ${{ hashFiles('**/composer.lock') }}
-
-      - name: Setup .env
-        run: cp .env.ci .env
-
-      - name: Init Environment
-        run: make up
+          key: composer-${{ hashFiles('**/composer.lock') }}
 
       - name: Run tests
         run: make test
