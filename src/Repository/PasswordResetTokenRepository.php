@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\PasswordResetToken;
 use App\Entity\User;
+use App\Security\Token\AuthTokenManager;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
@@ -11,26 +12,21 @@ use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
 class PasswordResetTokenRepository extends ServiceEntityRepository
 {
-    private PasswordHasherInterface $hasher;
-    public function __construct(ManagerRegistry $registry, PasswordHasherFactoryInterface $hasherFactory)
+
+    public function __construct(ManagerRegistry $registry, private readonly AuthTokenManager $authTokenManager)
     {
         parent::__construct($registry, PasswordResetToken::class);
-        $this->hasher = $hasherFactory->getPasswordHasher('common');
     }
 
     public function createForUser(User $user): PasswordResetToken
     {
-
-        $verifier = bin2hex(random_bytes(16));
-        $encryptedVerifier = $this->hasher->hash($verifier);
-
         $token = new PasswordResetToken();
         $token->setUser($user);
-        $token->setVerifier($encryptedVerifier);
-        $token->setPlainVerifier($verifier);
+        $token = $this->authTokenManager->configureAuthToken($token);
         $token->setUsages(0);
         $this->getEntityManager()->persist($token);
         $this->getEntityManager()->flush();
+
         return $token;
     }
 
@@ -40,6 +36,7 @@ class PasswordResetTokenRepository extends ServiceEntityRepository
         $token->setUsages($usages + 1);
         $this->getEntityManager()->persist($token);
         $this->getEntityManager()->flush();
+
         return $token;
     }
 
@@ -52,7 +49,7 @@ class PasswordResetTokenRepository extends ServiceEntityRepository
             return null;
         }
 
-        if (false === $this->hasher->verify($token->getVerifier(), $plainVerifier)) {
+        if (false === $this->authTokenManager->verifyAuthToken($token, $plainVerifier)) {
             return null;
         }
 

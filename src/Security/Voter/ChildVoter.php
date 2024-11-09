@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Security;
+namespace App\Security\Voter;
 
-use App\Entity\Family;
+
+use App\Entity\Child;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class FamilyVoter extends Voter
+class ChildVoter extends Voter
 {
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -15,12 +16,18 @@ class FamilyVoter extends Voter
             return false;
         }
 
-        if (false === $subject instanceof Family) {
+        if (false === $subject instanceof Child) {
             return false;
         }
         return true;
     }
 
+    /**
+     * @param string $attribute
+     * @param Child $subject
+     * @param TokenInterface $token
+     * @return bool
+     */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
@@ -29,7 +36,7 @@ class FamilyVoter extends Voter
             return false;
         }
 
-        /** @var Family $subject */
-        return $subject->getUsers()->contains($user);
+        return $user->getFamilies()->contains($subject->getFamily());
     }
+
 }

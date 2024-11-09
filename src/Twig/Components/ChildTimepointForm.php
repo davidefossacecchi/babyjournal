@@ -9,7 +9,7 @@ use App\Entity\Timepoints\Height;
 use App\Entity\Timepoints\Weight;
 use App\Form\TimepointType;
 use App\Repository\ChildrenRepository;
-use App\Security\EntityAction;
+use App\Security\Voter\EntityAction;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;

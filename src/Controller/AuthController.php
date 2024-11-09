@@ -114,7 +114,7 @@ class AuthController extends AbstractController
         return $this->render('password_reset.html.twig', compact('form'));
     }
 
-    #[Route(name: 'password_recovery', path: 'password-recovery', methods: ['GET', 'POST'])]
+    #[Route(name: 'password_recovery', path: '/password-recovery', methods: ['GET', 'POST'])]
     public function passwordRecoveryAction(Request $request, AuthTokenSerializer $serializer, EntityManagerInterface $entityManager, UserPasswordHasherInterface $hasher)
     {
         $tokenString = $request->get('t');
