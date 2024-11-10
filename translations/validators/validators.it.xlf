@@ -220,7 +220,7 @@
             </trans-unit>
             <trans-unit id="58">
                 <source>This email is already in use</source>
-                <target>Questa email risulta già utilizzats</target>
+                <target>Questa email risulta già utilizzata</target>
             </trans-unit>
             <trans-unit id="59">
                 <source>Invalid password, it must contains an uppercase character, a lower case character, a digit and a symbol between $, +, %, &amp;, :, -, !, and ?</source>

@@ -5,10 +5,22 @@
         <div class="col-lg-4 col-sm-6">
             <div class="card">
                 <div class="card-body">
-                    {{ form(signup_form, {action: path('signup'), method: 'POST'}) }}
+                    {{ form_start(signup_form, {action: path('signup'), method: 'POST'}) }}
+                        {{ form_row(signup_form.firstName) }}
+                        {{ form_row(signup_form.email) }}
+                        {{ form_row(signup_form.plainPassword) }}
+                        <div class="d-grid">
+                            {{ form_widget(signup_form.submit, {attr: {class: 'btn btn-primary'}}) }}
+                        </div>
+                    {{ form_end(signup_form) }}
                 </div>
             </div>
-
+            <p class="text-center mt-3">
+                Sei già registrato?
+            </p>
+            <div class="d-grid">
+                <a class="btn btn-outline-primary" href="{{ path('app_login') }}">Accedi</a>
+            </div>
         </div>
 
     </div>
