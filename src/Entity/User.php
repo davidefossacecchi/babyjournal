@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\AuthToken\AuthToken;
 use App\Entity\Timepoints\Post;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -40,6 +41,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\Regex(pattern: '/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[$+%&:\-!?]).{8,}/', message: 'Invalid password, it must contains an uppercase character, a lower case character, a digit and a symbol between $, +, %, &, :, -, !, and ?')]
     private ?string $plainPassword;
+
+    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => false])]
+    private bool $enabled = false;
+
+    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => false])]
+    private bool $verified = false;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: AuthToken::class)]
     private Collection $authTokens;
@@ -103,6 +110,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         return ['ROLE_USER'];
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): User
+    {
+        $this->enabled = $enabled;
+        return $this;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->verified;
+    }
+
+    public function setVerified(bool $verified): User
+    {
+        $this->verified = $verified;
+        return $this;
     }
 
     public function eraseCredentials(): void

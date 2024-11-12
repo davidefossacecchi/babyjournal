@@ -14,6 +14,9 @@ services:
             $pageParam: 'page'
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    _instanceof:
+        App\Security\Token\Contract\AuthTokenConfiguratorInterface:
+            tags: ['auth_token_configurator']
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -23,6 +26,7 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
     # session handler per redis
     Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler:
         arguments:
