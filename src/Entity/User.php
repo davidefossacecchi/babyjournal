@@ -41,6 +41,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Regex(pattern: '/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[$+%&:\-!?]).{8,}/', message: 'Invalid password, it must contains an uppercase character, a lower case character, a digit and a symbol between $, +, %, &, :, -, !, and ?')]
     private ?string $plainPassword;
 
+    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => false])]
+    private bool $enabled = false;
+
+    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => false])]
+    private bool $verified = false;
+
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: AuthToken::class)]
     private Collection $authTokens;
 
