@@ -2,7 +2,7 @@
 
 namespace App\Tests\Application;
 
-use App\Entity\PasswordResetToken;
+use App\Entity\AuthToken\PasswordResetToken;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;

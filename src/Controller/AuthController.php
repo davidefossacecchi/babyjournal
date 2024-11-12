@@ -2,10 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\PasswordResetToken;
+use App\Entity\AuthToken\PasswordResetToken;
 use App\Entity\User;
 use App\Form\SignupForm;
 use App\Repository\PasswordResetTokenRepository;
+use App\Security\Token\AuthTokenManager;
 use App\Serializer\AuthTokenSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -72,7 +73,12 @@ class AuthController extends AbstractController
     }
 
     #[Route(name: 'password_reset', path: '/password-reset', methods: ['POST', 'GET'])]
-    public function passwordResetAction(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer)
+    public function passwordResetAction(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        MailerInterface $mailer,
+        AuthTokenManager $authTokensManager
+    ): Response
     {
 
         $form = $this->createFormBuilder()
@@ -93,9 +99,7 @@ class AuthController extends AbstractController
             $userRepo = $entityManager->getRepository(User::class);
             $user = $userRepo->findOneBy(compact('email'));
             if (isset($user)) {
-                /** @var PasswordResetTokenRepository $passwordTokenRepo */
-                $passwordTokenRepo = $entityManager->getRepository(PasswordResetToken::class);
-                $token = $passwordTokenRepo->createForUser($user);
+                $token = $authTokensManager->createForUser(PasswordResetToken::class, $user);
 
                 $message = new TemplatedEmail();
 
@@ -115,16 +119,20 @@ class AuthController extends AbstractController
     }
 
     #[Route(name: 'password_recovery', path: '/password-recovery', methods: ['GET', 'POST'])]
-    public function passwordRecoveryAction(Request $request, AuthTokenSerializer $serializer, EntityManagerInterface $entityManager, UserPasswordHasherInterface $hasher)
+    public function passwordRecoveryAction(
+        Request $request,
+        AuthTokenSerializer $serializer,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $hasher,
+        AuthTokenManager $authTokensManager
+    )
     {
         $tokenString = $request->get('t');
         $form = null;
         try {
             $token = $serializer->deserialize($tokenString, new PasswordResetToken());
-            /** @var PasswordResetTokenRepository $tokenRepo */
-            $tokenRepo = $entityManager->getRepository(PasswordResetToken::class);
 
-            $token = $tokenRepo->findVerified($token->getSelector(), $token->getPlainVerifier());
+            $token = $authTokensManager->findVerified(PasswordResetToken::class, $token->getSelector(), $token->getPlainVerifier());
             if (empty($token)) {
                 throw new \InvalidArgumentException();
             }
@@ -151,7 +159,7 @@ class AuthController extends AbstractController
                 $user->setPassword($hashedPassword);
                 $entityManager->persist($user);
                 $entityManager->flush();
-                $tokenRepo->incrementUsage($token);
+                $authTokensManager->incrementUsage($token);
                 $this->addFlash('success', 'Password aggiornata correttamente');
                 return $this->redirectToRoute('app_login');
             }

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\AuthToken\AuthToken;
 use App\Entity\Timepoints\Post;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;

@@ -3,7 +3,7 @@
 namespace App\Serializer;
 
 
-use App\Entity\AuthToken;
+use App\Entity\AuthToken\AuthToken;
 
 class AuthTokenSerializer
 {
