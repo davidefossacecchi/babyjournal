@@ -112,6 +112,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return ['ROLE_USER'];
     }
 
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): User
+    {
+        $this->enabled = $enabled;
+        return $this;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->verified;
+    }
+
+    public function setVerified(bool $verified): User
+    {
+        $this->verified = $verified;
+        return $this;
+    }
+
     public function eraseCredentials(): void
     {
         $this->plainPassword = null;

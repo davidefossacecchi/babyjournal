@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\AuthToken\EmailVerificationToken;
 use App\Entity\AuthToken\PasswordResetToken;
 use App\Entity\User;
 use App\Form\SignupForm;
@@ -43,7 +44,8 @@ class AuthController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $hasher,
-        Security $security
+        MailerInterface $mailer,
+        AuthTokenManager $authTokensManager
     ): Response
     {
         $form = $this->createForm(SignupForm::class);
@@ -57,14 +59,30 @@ class AuthController extends AbstractController
             $user->setPassword($hasher->hashPassword($user, $plainPassword));
             $user->setCreatedAt(new \DateTime());
             $user->setUpdatedAt(new \DateTime());
+            $user->setEnabled(true);
             $entityManager->persist($user);
             $entityManager->flush();
-            $security->login($user, 'form_login');
-            $this->addFlash('success', 'Registrazione avvenuta con successo');
+
+            $entityManager->refresh($user);
+
+            $token = $authTokensManager->createForUser(EmailVerificationToken::class, $user);
+
+            $message = new TemplatedEmail();
+
+            $message
+                ->from('noreply@babyjournal.it')
+                ->to(new Address($user->getEmail()))
+                ->subject('Verifica la tua email')
+                ->htmlTemplate('emails/email_verification.html.twig')
+                ->context(compact('token'));
+
+            $mailer->send($message);
+            $this->addFlash('success', 'Abbiamo inviato una mail all\'indirizzo inserito. Segui il link per verificare la tua email');
             return $this->redirectToRoute('index');
         }
         return $this->render('signup.html.twig', ['signup_form' => $form]);
     }
+
 
     #[Route(name: 'logout', path: '/logout', methods: ['GET'])]
     public function logoutAction()
@@ -116,6 +134,35 @@ class AuthController extends AbstractController
         }
 
         return $this->render('password_reset.html.twig', compact('form'));
+    }
+
+    #[Route(name: 'email_verification', path: '/email-verification', methods: ['GET'])]
+    public function verifyEmail(
+        Request $request,
+        AuthTokenSerializer $serializer,
+        EntityManagerInterface $entityManager,
+        AuthTokenManager $authTokensManager,
+        Security $security
+    ): Response
+    {
+        $tokenString = $request->get('t');
+        try {
+            $token = $serializer->deserialize($tokenString, new EmailVerificationToken());
+            $token = $authTokensManager->findVerified(EmailVerificationToken::class, $token->getSelector(), $token->getPlainVerifier());
+            if (empty($token)) {
+                throw new \InvalidArgumentException();
+            }
+            $user = $token->getUser();
+            $user->setVerified(true);
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $authTokensManager->incrementUsage($token);
+            $this->addFlash('success', 'Email verificata correttamente');
+            $security->login($user, 'form_login');
+        } catch (\InvalidArgumentException $e) {
+            $this->addFlash('error', 'Link malformato o scaduto');
+        }
+        return $this->redirectToRoute('index');
     }
 
     #[Route(name: 'password_recovery', path: '/password-recovery', methods: ['GET', 'POST'])]

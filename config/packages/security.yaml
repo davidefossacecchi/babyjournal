@@ -27,7 +27,7 @@ security:
                 path: logout
 
     access_control:
-        - path: ^/(login|register|signup|password-reset|password-recovery)
+        - path: ^/(login|register|signup|password-reset|password-recovery|email-verification)
           roles: PUBLIC_ACCESS
         - path: ^/
           roles: IS_AUTHENTICATED_FULLY

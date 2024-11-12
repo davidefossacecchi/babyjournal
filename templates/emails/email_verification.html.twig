@@ -1,0 +1,7 @@
+{% set email_verification_url = url('email_verification', {t: serialize_token(token)}) %}
+<html>
+    <head></head>
+    <body>
+        Ecco il tuo link per verificare la mail ed accedere: <a href="{{ email_verification_url }}">{{ email_verification_url }}</a>
+    </body>
+</html>
