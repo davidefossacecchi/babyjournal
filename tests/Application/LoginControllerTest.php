@@ -38,6 +38,8 @@ class LoginControllerTest extends WebTestCase
         $user->setEmail('test@example.it');
         $user->setFirstName('Test');
         $user->setPassword($hasher->hashPassword($user, 'password'));
+        $user->setEnabled(true);
+        $user->setVerified(true);
         $user->setCreatedAt(new \DateTime());
         $user->setUpdatedAt(new \DateTime());
 

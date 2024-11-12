@@ -10,7 +10,7 @@ Login
         <div class="row justify-content-center">
             <div class="col-lg-4 col-sm-6">
                 {% if error %}
-                    <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                 {% endif %}
                 <div class="card">
                     <div class="card-body">
