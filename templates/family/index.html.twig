@@ -5,13 +5,20 @@
         <div class="col-lg-4 col-sm-6">
             <h2>Le tue famiglie</h2>
             {% if families|length > 0 %}
-                <ul>
-                    {% for family in families %}
-                        <li><a href="{{ path('family_edit', {id: family.id}) }}">{{ family.name }}</a></li>
-                    {% endfor %}
-                </ul>
+                {% for family in families %}
+                    <twig:FamilyCard family="{{ family }}" />
+
+                    {#                        <li><a href="{{ path('family_edit', {id: family.id}) }}">{{ family.name }}</a></li>#}
+                {% endfor %}
             {% endif %}
-            <a href="{{ path('family_create') }}">Aggiungi nuova</a>
+            <div class="d-grid">
+                <a class="btn btn-primary" href="{{ path('family_create') }}">
+                    <svg>
+                        <use xlink:href="#plus-circle"></use>
+                    </svg>
+                    Aggiungi nuova
+                </a>
+            </div>
         </div>
 
     </div>

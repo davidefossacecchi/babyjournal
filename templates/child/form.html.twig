@@ -12,14 +12,15 @@
     <div class="row justify-content-center">
         <div class="col-lg-4 col-sm-6">
             <h2>{{ title }}</h2>
-            <div class="card">
-                <div class="card-body">
-                    {{ form(form, {action: action, method: 'POST'}) }}
-                </div>
+            {{ form_start(form, {action: action, method: 'POST', attr: {class:'card'}}) }}
+            <div class="card-body pb-0">
+                {{ form_row(form.name) }}
+                {{ form_row(form.birthDate) }}
             </div>
-
+            <div class="card-footer border-top-0 bg-transparent d-grid">
+                {{ form_widget(form.submit) }}
+            </div>
+            {{ form_end(form) }}
         </div>
-
     </div>
-
 {% endblock %}
