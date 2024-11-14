@@ -33,6 +33,9 @@ jobs:
           path: ./vendor
           key: ${{ steps.cache-primes-restore.outputs.cache-primary-key }}
 
+      - name: Runs the asset builder
+        run: make assets
+
       - name: Run tests
         run: make test
 
