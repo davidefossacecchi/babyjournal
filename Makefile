@@ -12,6 +12,9 @@ restart: down up
 build-watch:
 	env USER_ID=$(USER_ID) GROUP_ID=$(GROUP_ID) docker compose exec php bin/console sass:build --watch
 
+assets:
+	env USER_ID=$(USER_ID) GROUP_ID=$(GROUP_ID) docker compose exec php bin/console sass:build
+
 test:
 	env USER_ID=$(USER_ID) GROUP_ID=$(GROUP_ID) docker compose exec php bin/phpunit
 
