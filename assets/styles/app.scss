@@ -10,3 +10,32 @@
 .card-footer .btn-link {
   text-decoration: none;
 }
+
+.timepoints-feed {
+  border-left: 2px solid $gray-400;
+  padding-left: 1rem;
+  margin-top: 1rem;
+  img {
+    max-width: 100%;
+    border-radius: $border-radius;
+  }
+}
+.timepoint-dot {
+  height: 1.5rem;
+  flex: 0 0 1.5rem;
+  border: 2px solid white;
+  border-radius: 50%;
+  background-color: $gray-400;
+}
+
+.timepoints-feed-item {
+  display: flex;
+  position: relative;
+  left: -1.80rem;
+  margin-bottom: 1.5rem;
+  column-gap: .75rem;
+}
+
+.timepoint {
+  margin-bottom: .75rem;
+}
