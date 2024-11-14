@@ -25,6 +25,8 @@ class UserFixtures extends Fixture
             $user->setEmail($faker->email);
             $pwd = $this->passwordHasher->hashPassword($user, $faker->password);
             $user->setPassword($pwd);
+            $user->setEnabled(true);
+            $user->setVerified(true);
             $manager->persist($user);
         }
         $manager->flush();

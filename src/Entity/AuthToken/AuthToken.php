@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\AuthToken;
+use App\Entity\User;
 use App\Schema\AuthTokenIdGenerator;
+use App\Security\Token\AuthTokenManager;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -9,7 +11,10 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\Entity]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'type', type: Types::STRING)]
-#[ORM\DiscriminatorMap([AuthTokenType::PASSWORD_RESET->value => PasswordResetToken::class])]
+#[ORM\DiscriminatorMap([
+    AuthTokenType::PASSWORD_RESET->value => PasswordResetToken::class,
+    AuthTokenType::EMAIL_VERIFICATION->value => EmailVerificationToken::class,
+])]
 abstract class AuthToken
 {
     use TimestampableEntity;

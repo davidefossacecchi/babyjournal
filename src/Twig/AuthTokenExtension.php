@@ -2,7 +2,7 @@
 
 namespace App\Twig;
 
-use App\Entity\AuthToken;
+use App\Entity\AuthToken\AuthToken;
 use App\Serializer\AuthTokenSerializer;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;

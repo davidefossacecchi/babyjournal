@@ -1,0 +1,31 @@
+<div class="card mb-4">
+    <a class="card-body pb-0 text-decoration-none" href="{{ path('family_posts', {id: family.id}) }}">
+        <h4 class="card-title">
+            {{ family.name }}
+        </h4>
+        <div class="row">
+            <div class="col-6 card-text">
+                {% set user_count = family.users|length %}
+                {{ user_count }} {{ user_count == 1 ? 'membro' : 'membri' }}
+            </div>
+            <div class="col-6 text-end">
+                {% set child_count = family.children|length %}
+                {{ child_count }} {{ child_count == 1 ? 'bimbo' : 'bimbi' }}
+            </div>
+        </div>
+    </a>
+    <div class="card-footer border-top-0 bg-transparent d-flex justify-content-between">
+        <a href="{{ path('family_edit', {id: family.id}) }}" class="btn btn-link">
+            <svg>
+                <use xlink:href="#edit"></use>
+            </svg>
+            Modifica
+        </a>
+        <a href="#" class="btn btn-link">
+            <svg>
+                <use xlink:href="#user-plus"></use>
+            </svg>
+            Invita
+        </a>
+    </div>
+</div>

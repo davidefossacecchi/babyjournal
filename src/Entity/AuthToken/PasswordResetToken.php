@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\AuthToken;
 use App\Repository\PasswordResetTokenRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PasswordResetTokenRepository::class)]
+#[ORM\Entity]
 class PasswordResetToken extends AuthToken
 {
     private const MAX_USAGES = 1;

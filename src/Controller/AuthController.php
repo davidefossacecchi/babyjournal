@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\PasswordResetToken;
+use App\Entity\AuthToken\EmailVerificationToken;
+use App\Entity\AuthToken\PasswordResetToken;
 use App\Entity\User;
 use App\Form\SignupForm;
 use App\Repository\PasswordResetTokenRepository;
+use App\Security\Token\AuthTokenManager;
 use App\Serializer\AuthTokenSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -42,7 +44,8 @@ class AuthController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $hasher,
-        Security $security
+        MailerInterface $mailer,
+        AuthTokenManager $authTokensManager
     ): Response
     {
         $form = $this->createForm(SignupForm::class);
@@ -56,14 +59,30 @@ class AuthController extends AbstractController
             $user->setPassword($hasher->hashPassword($user, $plainPassword));
             $user->setCreatedAt(new \DateTime());
             $user->setUpdatedAt(new \DateTime());
+            $user->setEnabled(true);
             $entityManager->persist($user);
             $entityManager->flush();
-            $security->login($user, 'form_login');
-            $this->addFlash('success', 'Registrazione avvenuta con successo');
+
+            $entityManager->refresh($user);
+
+            $token = $authTokensManager->createForUser(EmailVerificationToken::class, $user);
+
+            $message = new TemplatedEmail();
+
+            $message
+                ->from('noreply@babyjournal.it')
+                ->to(new Address($user->getEmail()))
+                ->subject('Verifica la tua email')
+                ->htmlTemplate('emails/email_verification.html.twig')
+                ->context(compact('token'));
+
+            $mailer->send($message);
+            $this->addFlash('success', 'Abbiamo inviato una mail all\'indirizzo inserito. Segui il link per verificare la tua email');
             return $this->redirectToRoute('index');
         }
         return $this->render('signup.html.twig', ['signup_form' => $form]);
     }
+
 
     #[Route(name: 'logout', path: '/logout', methods: ['GET'])]
     public function logoutAction()
@@ -72,7 +91,12 @@ class AuthController extends AbstractController
     }
 
     #[Route(name: 'password_reset', path: '/password-reset', methods: ['POST', 'GET'])]
-    public function passwordResetAction(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer)
+    public function passwordResetAction(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        MailerInterface $mailer,
+        AuthTokenManager $authTokensManager
+    ): Response
     {
 
         $form = $this->createFormBuilder()
@@ -93,9 +117,7 @@ class AuthController extends AbstractController
             $userRepo = $entityManager->getRepository(User::class);
             $user = $userRepo->findOneBy(compact('email'));
             if (isset($user)) {
-                /** @var PasswordResetTokenRepository $passwordTokenRepo */
-                $passwordTokenRepo = $entityManager->getRepository(PasswordResetToken::class);
-                $token = $passwordTokenRepo->createForUser($user);
+                $token = $authTokensManager->createForUser(PasswordResetToken::class, $user);
 
                 $message = new TemplatedEmail();
 
@@ -114,17 +136,50 @@ class AuthController extends AbstractController
         return $this->render('password_reset.html.twig', compact('form'));
     }
 
+    #[Route(name: 'email_verification', path: '/email-verification', methods: ['GET'])]
+    public function verifyEmail(
+        Request $request,
+        AuthTokenSerializer $serializer,
+        EntityManagerInterface $entityManager,
+        AuthTokenManager $authTokensManager,
+        Security $security
+    ): Response
+    {
+        $tokenString = $request->get('t');
+        try {
+            $token = $serializer->deserialize($tokenString, new EmailVerificationToken());
+            $token = $authTokensManager->findVerified(EmailVerificationToken::class, $token->getSelector(), $token->getPlainVerifier());
+            if (empty($token)) {
+                throw new \InvalidArgumentException();
+            }
+            $user = $token->getUser();
+            $user->setVerified(true);
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $authTokensManager->incrementUsage($token);
+            $this->addFlash('success', 'Email verificata correttamente');
+            $security->login($user, 'form_login');
+        } catch (\InvalidArgumentException $e) {
+            $this->addFlash('error', 'Link malformato o scaduto');
+        }
+        return $this->redirectToRoute('index');
+    }
+
     #[Route(name: 'password_recovery', path: '/password-recovery', methods: ['GET', 'POST'])]
-    public function passwordRecoveryAction(Request $request, AuthTokenSerializer $serializer, EntityManagerInterface $entityManager, UserPasswordHasherInterface $hasher)
+    public function passwordRecoveryAction(
+        Request $request,
+        AuthTokenSerializer $serializer,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $hasher,
+        AuthTokenManager $authTokensManager
+    )
     {
         $tokenString = $request->get('t');
         $form = null;
         try {
             $token = $serializer->deserialize($tokenString, new PasswordResetToken());
-            /** @var PasswordResetTokenRepository $tokenRepo */
-            $tokenRepo = $entityManager->getRepository(PasswordResetToken::class);
 
-            $token = $tokenRepo->findVerified($token->getSelector(), $token->getPlainVerifier());
+            $token = $authTokensManager->findVerified(PasswordResetToken::class, $token->getSelector(), $token->getPlainVerifier());
             if (empty($token)) {
                 throw new \InvalidArgumentException();
             }
@@ -151,7 +206,7 @@ class AuthController extends AbstractController
                 $user->setPassword($hashedPassword);
                 $entityManager->persist($user);
                 $entityManager->flush();
-                $tokenRepo->incrementUsage($token);
+                $authTokensManager->incrementUsage($token);
                 $this->addFlash('success', 'Password aggiornata correttamente');
                 return $this->redirectToRoute('app_login');
             }
