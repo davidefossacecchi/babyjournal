@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\AuthToken\FamilyInvitationToken;
 use App\Entity\Timepoints\Post;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,6 +15,7 @@ use Symfony\Component\Validator\Constraints;
 class Family
 {
     use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
@@ -27,12 +29,15 @@ class Family
     #[ORM\JoinTable(name: 'users_families')]
     private Collection $users;
 
-    #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'family')]
+    #[ORM\OneToMany(mappedBy: 'family', targetEntity: Post::class)]
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $posts;
 
-    #[ORM\OneToMany(targetEntity: Child::class, mappedBy: 'family')]
+    #[ORM\OneToMany(mappedBy: 'family', targetEntity: Child::class)]
     private Collection $children;
+
+    #[ORM\OneToMany(mappedBy: 'family', targetEntity: FamilyInvitationToken::class)]
+    private Collection $invitations;
 
     public function __construct()
     {
@@ -119,8 +124,29 @@ class Family
         return $this;
     }
 
-    public function removeChild(Child $child)
+    public function removeChild(Child $child): static
     {
         $this->children->removeElement($child);
+        return $this;
+    }
+
+    public function addInvitation(FamilyInvitationToken $invitation): static
+    {
+        if (false === $this->invitations->contains($invitation)) {
+            $this->invitations->add($invitation);
+            $invitation->setFamily($this);
+        }
+        return $this;
+    }
+
+    public function removeInvitation(FamilyInvitationToken $invitation): static
+    {
+        $this->invitations->removeElement($invitation);
+        return $this;
+    }
+
+    public function getInvitations(): Collection
+    {
+        return $this->invitations;
     }
 }
