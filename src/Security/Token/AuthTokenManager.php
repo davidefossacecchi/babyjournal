@@ -17,13 +17,24 @@ class AuthTokenManager
     ) {
     }
 
-    public function createForUser(string $tokenFqcn, User $user): AuthToken
+    public function configureForUser(string $tokenFqcn, User $user): AuthToken
     {
         $configurator = $this->getConfigurator($tokenFqcn);
         $token = $configurator->configureForUser($tokenFqcn, $user);
+        return $token;
+    }
+
+    public function persist(AuthToken $token): void
+    {
         $this->entityManager->persist($token);
         $this->entityManager->flush();
+    }
 
+
+    public function createForUser(string $tokenFqcn, User $user): AuthToken
+    {
+        $token = $this->configureForUser($tokenFqcn, $user);
+        $this->persist($token);
         return $token;
     }
 
@@ -31,8 +42,7 @@ class AuthTokenManager
     {
         $usages = $token->getUsages();
         $token->setUsages($usages + 1);
-        $this->entityManager->persist($token);
-        $this->entityManager->flush();
+        $this->persist($token);
 
         return $token;
     }
