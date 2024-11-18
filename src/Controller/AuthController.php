@@ -70,7 +70,6 @@ class AuthController extends AbstractController
             $message = new TemplatedEmail();
 
             $message
-                ->from('noreply@babyjournal.it')
                 ->to(new Address($user->getEmail()))
                 ->subject('Verifica la tua email')
                 ->htmlTemplate('emails/email_verification.html.twig')
@@ -122,7 +121,6 @@ class AuthController extends AbstractController
                 $message = new TemplatedEmail();
 
                 $message
-                    ->from('noreply@babyjournal.it')
                     ->to(new Address($email))
                     ->subject('Recupero password')
                     ->htmlTemplate('emails/password_reset.html.twig')

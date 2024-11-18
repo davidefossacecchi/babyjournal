@@ -6,6 +6,7 @@ use App\Entity\Family;
 use App\Entity\User;
 use App\Form\FamilyType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -63,5 +64,11 @@ class FamilyController extends AbstractController
         }
 
         return $this->render('family/form.html.twig', compact('form', 'family'));
+    }
+
+    #[Route(name: 'accept_family_invitation', path: '/family-invitation', methods: ['GET'])]
+    function acceptFamilyInvitation(): Response
+    {
+        return new Response('ciupa');
     }
 }

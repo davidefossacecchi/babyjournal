@@ -5,12 +5,16 @@ namespace App\Twig\Components;
 use App\Entity\AuthToken\FamilyInvitationToken;
 use App\Entity\Family;
 use App\Entity\User;
-use App\Form\FamilyInvitationType;
 use App\Security\Token\AuthTokenManager;
 use App\Security\Voter\EntityAction;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveArg;
@@ -37,10 +41,16 @@ class FamilyInvitationForm extends AbstractController
 
     protected function instantiateForm(): FormInterface
     {
-        /** @var User $user */
-        $user = $this->security->getUser();
-        $token = $this->authTokenManager->configureForUser(FamilyInvitationToken::class, $user);
-        return $this->createForm(FamilyInvitationType::class, $token);
+        return $this->createFormBuilder()
+            ->add('email', EmailType::class, [
+                'label' => 'Email',
+                'constraints' => [
+                    new NotBlank(),
+                    new \Symfony\Component\Validator\Constraints\Email()
+                ]
+            ])
+            ->add('submit', SubmitType::class, ['label' => 'Invita'])
+            ->getForm();
     }
 
     #[LiveListener('openInvitationForm')]
@@ -51,7 +61,7 @@ class FamilyInvitationForm extends AbstractController
     }
 
     #[LiveAction]
-    public function save(#[LiveArg] Family $family): void
+    public function save(#[LiveArg] Family $family, MailerInterface $mailer): void
     {
         $this->family = $family;
         $this->denyAccessUnlessGranted(EntityAction::VIEW->value, $this->family);
@@ -61,12 +71,12 @@ class FamilyInvitationForm extends AbstractController
 
         if ($form->isValid()) {
             /** @var FamilyInvitationToken $token */
-            $token = $form->getData();
+            $invitedEmail = $form->getData()['email'];
             $this->resetForm();
             /** @var User $user */
             $user = $this->security->getUser();
 
-            if ($user->getEmail() === $token->getEmail()) {
+            if ($user->getEmail() === $invitedEmail) {
                 $this->addFlash('invitation:error', 'Non puoi invitare te stesso');
                 return;
             }
@@ -74,7 +84,7 @@ class FamilyInvitationForm extends AbstractController
             $familyUsers = $this->family->getUsers();
             /** @var User $familyUser */
             foreach ($familyUsers as $familyUser) {
-                if ($familyUser->getEmail() === $token->getEmail()) {
+                if ($familyUser->getEmail() === $invitedEmail) {
                     $this->addFlash('invitation:error', 'L\'utente con email "'.$familyUser->getEmail().'" è già membro della famiglia');
                     return;
                 }
@@ -83,15 +93,28 @@ class FamilyInvitationForm extends AbstractController
             $invitationTokens = $this->family->getInvitations();
             /** @var FamilyInvitationToken $token */
             foreach ($invitationTokens as $invitationToken) {
-                if ($invitationToken->getEmail() === $token->getEmail() && $invitationToken->isUsable()) {
+                if ($invitationToken->getEmail() === $invitedEmail && $invitationToken->isUsable()) {
                     $this->addFlash('invitation:error', 'L\'utente con email "'.$invitationToken->getEmail().'" è già stato invitato');
                     return;
                 }
             }
-
+            $token = $this->initToken();
+            $token->setEmail($invitedEmail);
             $token->setFamily($this->family);
-            $this->authTokenManager->persist($form->getData());
+            $this->authTokenManager->persist($token);
             $this->addFlash('invitation:success', 'Invito inviato');
+            $message = new TemplatedEmail();
+
+            $message
+                ->to($token->getEmail())
+                ->subject('Invito a unirti alla famiglia "'.$this->getFamilyName().'"')
+                ->htmlTemplate('emails/family_invitation.html.twig')
+                ->context([
+                    'token' => $token,
+                    'family_name' => $this->family->getName(),
+                    'inviter' => $user->getFirstName()
+                ]);
+            $mailer->send($message);
         }
     }
 
@@ -104,5 +127,14 @@ class FamilyInvitationForm extends AbstractController
     public function getFamilyName(): ?string
     {
         return $this->family?->getName();
+    }
+
+    private function initToken(): FamilyInvitationToken
+    {
+        /** @var User $user */
+        $user = $this->security->getUser();
+        /** @var FamilyInvitationToken $token */
+        $token = $this->authTokenManager->configureForUser(FamilyInvitationToken::class, $user);
+        return $token;
     }
 }

@@ -14,7 +14,7 @@ class FamilyInvitationToken extends AuthToken
     #[Assert\Email]
     private string $email;
 
-    #[ORM\ManyToOne(targetEntity: Family::class)]
+    #[ORM\ManyToOne(targetEntity: Family::class, inversedBy: 'invitations')]
     private Family $family;
 
     public function hasReachedMaxUsages(): bool
