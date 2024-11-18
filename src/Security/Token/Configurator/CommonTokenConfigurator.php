@@ -4,6 +4,7 @@ namespace App\Security\Token\Configurator;
 
 use App\Entity\AuthToken\AuthToken;
 use App\Entity\AuthToken\EmailVerificationToken;
+use App\Entity\AuthToken\FamilyInvitationToken;
 use App\Entity\AuthToken\PasswordResetToken;
 use App\Entity\User;
 use App\Security\Token\Contract\AuthTokenConfiguratorInterface;
@@ -44,7 +45,11 @@ class CommonTokenConfigurator implements AuthTokenConfiguratorInterface
 
     public function supports(string $tokenFqcn): bool
     {
-        return in_array($tokenFqcn, [PasswordResetToken::class, EmailVerificationToken::class]);
+        return in_array($tokenFqcn, [
+            PasswordResetToken::class,
+            EmailVerificationToken::class,
+            FamilyInvitationToken::class
+        ]);
     }
 
 }

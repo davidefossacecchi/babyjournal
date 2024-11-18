@@ -14,6 +14,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\DiscriminatorMap([
     AuthTokenType::PASSWORD_RESET->value => PasswordResetToken::class,
     AuthTokenType::EMAIL_VERIFICATION->value => EmailVerificationToken::class,
+    AuthTokenType::FAMILY_INVITATION->value => FamilyInvitationToken::class,
 ])]
 abstract class AuthToken
 {
@@ -116,7 +117,19 @@ abstract class AuthToken
             return false;
         }
 
-        return \DateTimeImmutable::createFromInterface($createdAt)->add($this->getTTL()) >= new \DateTime();
+        return false === $this->isExpired();
+    }
+
+    public function isExpired(): bool
+    {
+        $createdAt = $this->getCreatedAt();
+
+        // a not persisted token is not expired yet
+        if (empty($createdAt)) {
+            return false;
+        }
+
+        return \DateTimeImmutable::createFromInterface($createdAt)->add($this->getTTL()) < new \DateTime();
     }
 
 
