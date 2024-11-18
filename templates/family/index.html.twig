@@ -7,8 +7,6 @@
             {% if families|length > 0 %}
                 {% for family in families %}
                     <twig:FamilyCard family="{{ family }}" />
-
-                    {#                        <li><a href="{{ path('family_edit', {id: family.id}) }}">{{ family.name }}</a></li>#}
                 {% endfor %}
             {% endif %}
             <div class="d-grid">
@@ -19,6 +17,10 @@
                     Aggiungi nuova
                 </a>
             </div>
+            <div class="modal fade" id="invitation-modal">
+                <twig:FamilyInvitationForm />
+            </div>
+
         </div>
 
     </div>

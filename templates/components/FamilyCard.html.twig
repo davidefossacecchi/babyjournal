@@ -1,4 +1,4 @@
-<div class="card mb-4">
+<div class="card mb-4" {{ attributes }}>
     <a class="card-body pb-0 text-decoration-none" href="{{ path('family_posts', {id: family.id}) }}">
         <h4 class="card-title">
             {{ family.name }}
@@ -21,11 +21,15 @@
             </svg>
             Modifica
         </a>
-        <a href="#" class="btn btn-link">
+        <button
+                class="btn btn-link"
+                data-action="live#action"
+                data-live-action-param="openInvitationForm"
+        >
             <svg>
                 <use xlink:href="#user-plus"></use>
             </svg>
             Invita
-        </a>
+        </button>
     </div>
 </div>
