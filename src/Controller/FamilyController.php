@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\AuthToken\FamilyInvitationToken;
 use App\Entity\Family;
 use App\Entity\User;
 use App\Form\FamilyType;
+use App\Security\Token\AuthTokenManager;
+use App\Serializer\AuthTokenSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -67,8 +70,34 @@ class FamilyController extends AbstractController
     }
 
     #[Route(name: 'accept_family_invitation', path: '/family-invitation', methods: ['GET'])]
-    function acceptFamilyInvitation(): Response
+    function acceptFamilyInvitation(
+        Request $request,
+        AuthTokenManager $authTokenManager,
+        AuthTokenSerializer $serializer,
+        EntityManagerInterface $entityManager
+    ): Response
     {
-        return new Response('ciupa');
+        /** @var User $user */
+        $user = $this->getUser();
+        $t = $request->query->get('t');
+        $token = $serializer->deserialize($t, new FamilyInvitationToken());
+        /** @var FamilyInvitationToken|null $token */
+        $token = $authTokenManager->findVerified(FamilyInvitationToken::class, $token->getSelector(), $token->getPlainVerifier());
+
+        if (is_null($token)) {
+            $this->addFlash('error', 'Link malformato o scaduto');
+            return $this->redirectToRoute('index');
+        }
+
+        if ($user->getEmail() !== $token->getEmail()) {
+            $this->addFlash('error', 'Questa operazione può essere completata solo dall\'utente che possiede la mail a cui è stato inviato l\'invito');
+            return $this->redirectToRoute('index');
+        }
+        $user->addFamily($token->getFamily());
+        $entityManager->persist($user);
+        $entityManager->flush();
+        $authTokenManager->incrementUsage($token);
+        $this->addFlash('success', 'Benvenuto nella famiglia "'.$token->getFamily()->getName().'"');
+        return $this->redirectToRoute('family_posts', ['id' => $token->getFamily()->getId()]);
     }
 }
