@@ -13,3 +13,8 @@ document.addEventListener('modal:close', () => {
 		bootstrap.Modal.getInstance(openModal).hide();
 	}
 })
+
+document.addEventListener('modal:open', event => {
+	const modal = new bootstrap.Modal(document.querySelector(`#${event.detail.modalId}`));
+	modal.show();
+})

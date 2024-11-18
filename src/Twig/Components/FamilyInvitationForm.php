@@ -13,7 +13,8 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
-use Symfony\UX\LiveComponent\Attribute\LiveProp;
+use Symfony\UX\LiveComponent\Attribute\LiveArg;
+use Symfony\UX\LiveComponent\Attribute\LiveListener;
 use Symfony\UX\LiveComponent\ComponentToolsTrait;
 use Symfony\UX\LiveComponent\ComponentWithFormTrait;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
@@ -25,7 +26,6 @@ class FamilyInvitationForm extends AbstractController
     use ComponentWithFormTrait;
     use ComponentToolsTrait;
 
-    #[LiveProp]
     public ?Family $family = null;
     public function __construct(
         private readonly Security $security,
@@ -43,15 +43,53 @@ class FamilyInvitationForm extends AbstractController
         return $this->createForm(FamilyInvitationType::class, $token);
     }
 
-    #[LiveAction]
-    public function save(FormInterface $form): void
+    #[LiveListener('openInvitationForm')]
+    public function setFamily(#[LiveArg] Family $targetFamily): void
     {
+        $this->family = $targetFamily;
+        $this->dispatchBrowserEvent('modal:open', ['modalId' => 'invitation-modal']);
+    }
+
+    #[LiveAction]
+    public function save(#[LiveArg] Family $family): void
+    {
+        $this->family = $family;
         $this->denyAccessUnlessGranted(EntityAction::VIEW->value, $this->family);
         $this->submitForm();
 
         $form = $this->getForm();
 
         if ($form->isValid()) {
+            /** @var FamilyInvitationToken $token */
+            $token = $form->getData();
+            $this->resetForm();
+            /** @var User $user */
+            $user = $this->security->getUser();
+
+            if ($user->getEmail() === $token->getEmail()) {
+                $this->addFlash('invitation:error', 'Non puoi invitare te stesso');
+                return;
+            }
+
+            $familyUsers = $this->family->getUsers();
+            /** @var User $familyUser */
+            foreach ($familyUsers as $familyUser) {
+                if ($familyUser->getEmail() === $token->getEmail()) {
+                    $this->addFlash('invitation:error', 'L\'utente con email "'.$familyUser->getEmail().'" è già membro della famiglia');
+                    return;
+                }
+            }
+
+            $invitationTokens = $this->family->getInvitations();
+            /** @var FamilyInvitationToken $token */
+            foreach ($invitationTokens as $invitationToken) {
+                if ($invitationToken->getEmail() === $token->getEmail() && $invitationToken->isUsable()) {
+                    $this->addFlash('invitation:error', 'L\'utente con email "'.$invitationToken->getEmail().'" è già stato invitato');
+                    return;
+                }
+            }
+
+            $token->setFamily($this->family);
             $this->authTokenManager->persist($form->getData());
             $this->addFlash('invitation:success', 'Invito inviato');
         }
@@ -61,5 +99,10 @@ class FamilyInvitationForm extends AbstractController
     public function close(): void
     {
         $this->dispatchBrowserEvent('modal:close');
+    }
+
+    public function getFamilyName(): ?string
+    {
+        return $this->family?->getName();
     }
 }

@@ -9,7 +9,7 @@ build:
 down:
 	env USER_ID=$(USER_ID) GROUP_ID=$(GROUP_ID) docker compose down --remove-orphans
 restart: down up
-build-watch:
+assets-watch:
 	env USER_ID=$(USER_ID) GROUP_ID=$(GROUP_ID) docker compose exec php bin/console sass:build --watch
 
 assets:

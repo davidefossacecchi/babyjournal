@@ -117,7 +117,19 @@ abstract class AuthToken
             return false;
         }
 
-        return \DateTimeImmutable::createFromInterface($createdAt)->add($this->getTTL()) >= new \DateTime();
+        return false === $this->isExpired();
+    }
+
+    public function isExpired(): bool
+    {
+        $createdAt = $this->getCreatedAt();
+
+        // a not persisted token is not expired yet
+        if (empty($createdAt)) {
+            return false;
+        }
+
+        return \DateTimeImmutable::createFromInterface($createdAt)->add($this->getTTL()) < new \DateTime();
     }
 
 
