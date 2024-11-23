@@ -16,10 +16,7 @@ class ChildVoter extends Voter
             return false;
         }
 
-        if (false === $subject instanceof Child) {
-            return false;
-        }
-        return true;
+        return $subject instanceof Child;
     }
 
     /**
@@ -32,11 +29,7 @@ class ChildVoter extends Voter
     {
         $user = $token->getUser();
 
-        if (false === $user instanceof User) {
-            return false;
-        }
-
-        return $user->getFamilies()->contains($subject->getFamily());
+        return $user instanceof User && $user->getFamilies()->contains($subject->getFamily());
     }
 
 }
