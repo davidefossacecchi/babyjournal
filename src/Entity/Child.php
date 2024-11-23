@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\AuthToken\ChildInvitationToken;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -35,9 +36,13 @@ class Child
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'representedChildren')]
     private ?User $representingUser;
 
+    #[ORM\OneToMany(mappedBy: 'child', targetEntity: ChildInvitationToken::class)]
+    private Collection $invitations;
+
     public function __construct()
     {
         $this->timepoints = new ArrayCollection();
+        $this->invitations = new ArrayCollection();
     }
     public function getId(): int
     {
@@ -112,6 +117,26 @@ class Child
     public function setRepresentingUser(?User $representingUser): Child
     {
         $this->representingUser = $representingUser;
+        return $this;
+    }
+
+    public function getInvitations(): Collection
+    {
+        return $this->invitations;
+    }
+
+    public function addInvitation(ChildInvitationToken $invitation): Child
+    {
+        if (false === $this->invitations->contains($invitation)) {
+            $this->invitations->add($invitation);
+            $invitation->setChild($this);
+        }
+        return $this;
+    }
+
+    public function removeInvitation(ChildInvitationToken $invitation): Child
+    {
+        $this->invitations->removeElement($invitation);
         return $this;
     }
 }
