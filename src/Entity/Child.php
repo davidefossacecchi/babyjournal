@@ -32,6 +32,9 @@ class Child
     #[ORM\OneToMany(mappedBy: 'child', targetEntity: TimePoint::class, orphanRemoval: true)]
     private Collection $timepoints;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'representedChildren')]
+    private ?User $representingUser;
+
     public function __construct()
     {
         $this->timepoints = new ArrayCollection();
@@ -98,6 +101,17 @@ class Child
     public function removeTimepoint(TimePoint $timePoint): Child
     {
         $this->timepoints->removeElement($timePoint);
+        return $this;
+    }
+
+    public function getRepresentingUser(): ?User
+    {
+        return $this->representingUser;
+    }
+
+    public function setRepresentingUser(?User $representingUser): Child
+    {
+        $this->representingUser = $representingUser;
         return $this;
     }
 }
