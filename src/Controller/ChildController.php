@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Child;
 use App\Entity\Family;
 use App\Form\ChildType;
+use App\Security\Voter\EntityAction;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,7 +16,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ChildController extends AbstractController
 {
     #[Route(path: '/family/{id}/child', name: 'create_child', methods: ['GET', 'POST'])]
-    #[IsGranted('view', 'family')]
+    #[IsGranted(EntityAction::EDIT->value, 'family')]
     public function create(Request $request, Family $family, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(ChildType::class);
@@ -39,8 +40,15 @@ class ChildController extends AbstractController
             ]);
     }
 
+    #[Route(path: '/family/{id}/children', name: 'children_list', methods: ['GET'])]
+    #[IsGranted(EntityAction::VIEW->value, 'family')]
+    public function index(Family $family): Response
+    {
+        return $this->render('child/index.html.twig', compact('family'));
+    }
+
     #[Route(path: '/child/{id}', name: 'edit_child', methods: ['GET', 'POST'])]
-    #[IsGranted('edit', 'child')]
+    #[IsGranted(EntityAction::EDIT->value, 'child')]
     public function edit(Request $request, Child $child, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(ChildType::class, $child);

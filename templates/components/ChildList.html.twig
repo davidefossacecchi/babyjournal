@@ -1,0 +1,22 @@
+<div {{ attributes }}>
+    {% for child in family.children %}
+        <twig:ChildCard child="{{ child }}" />
+    {% endfor %}
+    <div class="d-grid">
+        <button
+            type="button"
+            class="btn btn-primary"
+            data-action="live#action"
+            data-live-action-param="openAddForm"
+        >
+            <svg>
+                <use xlink:href="#plus-circle"></use>
+            </svg>
+            Aggiungi nuov* bimb*
+        </button>
+    </div>
+    <div class="modal fade" id="add-modal">
+        <twig:ChildForm family="{{ family }}" />
+    </div>
+</div>
+

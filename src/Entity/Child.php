@@ -24,8 +24,9 @@ class Child
     private string $name;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[Assert\NotBlank]
     #[Assert\LessThanOrEqual('today')]
-    private \DateTimeImmutable $birthDate;
+    private ?\DateTimeImmutable $birthDate;
 
     #[ORM\ManyToOne(targetEntity: Family::class, inversedBy: 'children')]
     private Family $family;
@@ -66,12 +67,12 @@ class Child
         return $this;
     }
 
-    public function getBirthDate(): \DateTimeImmutable
+    public function getBirthDate(): ?\DateTimeImmutable
     {
         return $this->birthDate;
     }
 
-    public function setBirthDate(\DateTimeImmutable $birthDate): Child
+    public function setBirthDate(?\DateTimeImmutable $birthDate): Child
     {
         $this->birthDate = $birthDate;
         return $this;
@@ -138,5 +139,16 @@ class Child
     {
         $this->invitations->removeElement($invitation);
         return $this;
+    }
+
+    public function hasPendingInvitations(): bool
+    {
+        $invitations = $this->getInvitations();
+        foreach ($invitations as $invitation) {
+            if ($invitation->isUsable()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
