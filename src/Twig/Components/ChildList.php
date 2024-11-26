@@ -21,7 +21,7 @@ class ChildList
     public Family $family;
 
     #[LiveListener('childAdded')]
-    #[LiveListener('childrenInvited')]
+    #[LiveListener('childInvited')]
     public function onChildrenStatusChange(): void
     {
 

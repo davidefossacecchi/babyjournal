@@ -22,6 +22,6 @@ class ChildCard
     #[LiveAction]
     public function openInvitationForm(): void
     {
-        $this->dispatchBrowserEvent('modal:open', ['modalId' => 'invitation-modal']);
+        $this->emit('openInvitationForm', ['child' => $this->child->getId()]);
     }
 }

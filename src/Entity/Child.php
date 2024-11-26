@@ -141,14 +141,13 @@ class Child
         return $this;
     }
 
+    public function getPendingInvitations(): Collection
+    {
+        return $this->invitations->filter(fn(ChildInvitationToken $invitation) => $invitation->isUsable());
+    }
+
     public function hasPendingInvitations(): bool
     {
-        $invitations = $this->getInvitations();
-        foreach ($invitations as $invitation) {
-            if ($invitation->isUsable()) {
-                return true;
-            }
-        }
-        return false;
+        return $this->getPendingInvitations()->count() > 0;
     }
 }
