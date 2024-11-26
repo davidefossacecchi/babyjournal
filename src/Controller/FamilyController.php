@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\AuthToken\FamilyInvitationToken;
+use App\Entity\Child;
 use App\Entity\Family;
 use App\Entity\User;
 use App\Form\FamilyType;
 use App\Security\Token\AuthTokenManager;
 use App\Serializer\AuthTokenSerializer;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +27,12 @@ class FamilyController extends AbstractController
         $user = $this->getUser();
         $families = $user->getFamilies();
 
-        return $this->render('family/index.html.twig', compact('families'));
+        $allFamilies = $user->getRepresentedChildren()->reduce(function (Collection $acc, Child $child) {
+            $acc->add($child->getFamily());
+            return $acc;
+        }, $families);
+
+        return $this->render('family/index.html.twig', ['families' => $allFamilies]);
     }
 
     #[Route(name: 'family_create', path: '/create-family', methods: ['GET', 'POST'])]

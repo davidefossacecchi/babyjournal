@@ -7,12 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
-class FamilyInvitationToken extends AuthToken
+class FamilyInvitationToken extends AuthToken implements UserInvitationTokenInterface
 {
-    #[ORM\Column(type: 'string', length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\Email]
-    private string $email;
+    use InvitesUsers;
 
     #[ORM\ManyToOne(targetEntity: Family::class, inversedBy: 'invitations')]
     private Family $family;
@@ -25,17 +22,6 @@ class FamilyInvitationToken extends AuthToken
     public function getTTL(): \DateInterval
     {
         return new \DateInterval('P1W');
-    }
-
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): FamilyInvitationToken
-    {
-        $this->email = $email;
-        return $this;
     }
 
     public function getFamily(): Family

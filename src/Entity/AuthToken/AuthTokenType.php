@@ -9,4 +9,5 @@ enum AuthTokenType: string
     case EMAIL_VERIFICATION = 'email_verification';
 
     case FAMILY_INVITATION = 'family_invitation';
+    case CHILD_INVITATION = 'child_invitation';
 }

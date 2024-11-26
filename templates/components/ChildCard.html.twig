@@ -1,0 +1,49 @@
+{% set canEdit = is_granted('edit', child) %}
+{% set canInvite = canEdit and child.representingUser is empty %}
+<div class="card mb-4" {{ attributes }}>
+    <a class="card-body pb-0 text-decoration-none">
+        <h4 class="card-title">
+            {{ child.name }}
+        </h4>
+        <div class="row">
+            <div class="col-12 card-text">
+                Data di nascita: {{ child.birthDate|date('d/m/Y') }}
+            </div>
+        </div>
+    </a>
+    <div class="card-footer border-top-0 bg-transparent d-flex justify-content-between">
+        {% if canEdit %}
+        <a href="{{ path('edit_child', {id: child.id}) }}" class="btn btn-link">
+            <svg>
+                <use xlink:href="#edit"></use>
+            </svg>
+            Modifica
+        </a>
+        {% else %}
+            {# I add an empty span as a placeholder #}
+            <span></span>
+        {% endif %}
+        {% if child.hasPendingInvitations() %}
+            <span class="text-muted">
+                <svg>
+                    <use xlink:href="#clock"></use>
+                </svg>
+                Invito in attesa
+            </span>
+        {% elseif canInvite %}
+        <button
+            class="btn btn-link"
+            data-action="live#action"
+            data-live-action-param="openInvitationForm"
+        >
+            <svg>
+                <use xlink:href="#user-plus"></use>
+            </svg>
+            Invita
+        </button>
+        {% else %}
+            {# I add an empty span as a placeholder #}
+            <span></span>
+        {% endif %}
+    </div>
+</div>

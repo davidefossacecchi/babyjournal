@@ -57,10 +57,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'author')]
     private Collection $posts;
 
+    #[ORM\OneToMany(targetEntity: Child::class, mappedBy: 'representingUser')]
+    private Collection $representedChildren;
+
     public function __construct()
     {
         $this->authTokens = new ArrayCollection();
         $this->families = new ArrayCollection();
+        $this->representedChildren = new ArrayCollection();
     }
 
     public function getId(): int
@@ -208,6 +212,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removePost(Post $post): User
     {
         $this->posts->removeElement($post);
+        return $this;
+    }
+
+    public function getRepresentedChildren(): Collection
+    {
+        return $this->representedChildren;
+    }
+
+    public function addRepresrentedChild(Child $child): User
+    {
+        if (false === $this->representedChildren->contains($child)) {
+            $this->representedChildren->add($child);
+            $child->setRepresentingUser($this);
+        }
+        return $this;
+    }
+
+    public function removeRepresentedChild(Child $child): User
+    {
+        $this->representedChildren->removeElement($child);
+        $child->setRepresentingUser(null);
         return $this;
     }
 }
