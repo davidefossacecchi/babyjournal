@@ -1,0 +1,4 @@
+{% set child_invitation_link = url('accept_child_invitation', {t: serialize_token(token)}) %}
+Ciao {{ child_name }},
+ {{ inviter }} ti ha invitato a unirti alla sua famiglia {{ family_name }}.
+Per accettare l'invito, clicca sul seguente link: {{ child_invitation_link }}

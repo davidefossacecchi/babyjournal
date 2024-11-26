@@ -3,6 +3,7 @@
 namespace App\Security\Token\Configurator;
 
 use App\Entity\AuthToken\AuthToken;
+use App\Entity\AuthToken\ChildInvitationToken;
 use App\Entity\AuthToken\EmailVerificationToken;
 use App\Entity\AuthToken\FamilyInvitationToken;
 use App\Entity\AuthToken\PasswordResetToken;
@@ -48,7 +49,8 @@ class CommonTokenConfigurator implements AuthTokenConfiguratorInterface
         return in_array($tokenFqcn, [
             PasswordResetToken::class,
             EmailVerificationToken::class,
-            FamilyInvitationToken::class
+            FamilyInvitationToken::class,
+            ChildInvitationToken::class
         ]);
     }
 

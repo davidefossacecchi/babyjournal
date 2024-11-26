@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\AuthToken\ChildInvitationToken;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -23,8 +24,9 @@ class Child
     private string $name;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[Assert\NotBlank]
     #[Assert\LessThanOrEqual('today')]
-    private \DateTimeImmutable $birthDate;
+    private ?\DateTimeImmutable $birthDate;
 
     #[ORM\ManyToOne(targetEntity: Family::class, inversedBy: 'children')]
     private Family $family;
@@ -32,9 +34,16 @@ class Child
     #[ORM\OneToMany(mappedBy: 'child', targetEntity: TimePoint::class, orphanRemoval: true)]
     private Collection $timepoints;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'representedChildren')]
+    private ?User $representingUser;
+
+    #[ORM\OneToMany(mappedBy: 'child', targetEntity: ChildInvitationToken::class)]
+    private Collection $invitations;
+
     public function __construct()
     {
         $this->timepoints = new ArrayCollection();
+        $this->invitations = new ArrayCollection();
     }
     public function getId(): int
     {
@@ -58,12 +67,12 @@ class Child
         return $this;
     }
 
-    public function getBirthDate(): \DateTimeImmutable
+    public function getBirthDate(): ?\DateTimeImmutable
     {
         return $this->birthDate;
     }
 
-    public function setBirthDate(\DateTimeImmutable $birthDate): Child
+    public function setBirthDate(?\DateTimeImmutable $birthDate): Child
     {
         $this->birthDate = $birthDate;
         return $this;
@@ -99,5 +108,46 @@ class Child
     {
         $this->timepoints->removeElement($timePoint);
         return $this;
+    }
+
+    public function getRepresentingUser(): ?User
+    {
+        return $this->representingUser;
+    }
+
+    public function setRepresentingUser(?User $representingUser): Child
+    {
+        $this->representingUser = $representingUser;
+        return $this;
+    }
+
+    public function getInvitations(): Collection
+    {
+        return $this->invitations;
+    }
+
+    public function addInvitation(ChildInvitationToken $invitation): Child
+    {
+        if (false === $this->invitations->contains($invitation)) {
+            $this->invitations->add($invitation);
+            $invitation->setChild($this);
+        }
+        return $this;
+    }
+
+    public function removeInvitation(ChildInvitationToken $invitation): Child
+    {
+        $this->invitations->removeElement($invitation);
+        return $this;
+    }
+
+    public function getPendingInvitations(): Collection
+    {
+        return $this->invitations->filter(fn(ChildInvitationToken $invitation) => $invitation->isUsable());
+    }
+
+    public function hasPendingInvitations(): bool
+    {
+        return $this->getPendingInvitations()->count() > 0;
     }
 }

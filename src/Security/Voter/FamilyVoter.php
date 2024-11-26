@@ -15,10 +15,7 @@ class FamilyVoter extends Voter
             return false;
         }
 
-        if (false === $subject instanceof Family) {
-            return false;
-        }
-        return true;
+        return $subject instanceof Family;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -29,7 +26,33 @@ class FamilyVoter extends Voter
             return false;
         }
 
-        /** @var Family $subject */
-        return $subject->getUsers()->contains($user);
+        return match ($attribute) {
+            EntityAction::VIEW->value => $this->canUserViewFamily($user, $subject),
+            EntityAction::EDIT->value => $this->canUserEditFamily($user, $subject),
+            default => false,
+        };
+
+    }
+
+    protected function canUserViewFamily(User $user, Family $family): bool
+    {
+        $representedChildren = $user->getRepresentedChildren();
+        // if the user can edit the family, they can view it
+        if ($this->canUserEditFamily($user, $family)) {
+            return true;
+        }
+
+        // if a user represents a child, they can view the family
+        foreach ($representedChildren as $child) {
+            if ($family->getChildren()->contains($child)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected function canUserEditFamily(User $user, Family $family): bool
+    {
+        return $family->getUsers()->contains($user);
     }
 }

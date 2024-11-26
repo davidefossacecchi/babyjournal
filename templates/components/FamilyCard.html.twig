@@ -1,19 +1,22 @@
+{% set user_count = family.users|length %}
+{% set child_count = family.children|length %}
 <div class="card mb-4" {{ attributes }}>
-    <a class="card-body pb-0 text-decoration-none" href="{{ path('family_posts', {id: family.id}) }}">
-        <h4 class="card-title">
+    <div class="card-body pb-0">
+        <a class="card-title" href="{{ path('family_posts', {id: family.id}) }}">
             {{ family.name }}
-        </h4>
+        </a>
         <div class="row">
             <div class="col-6 card-text">
-                {% set user_count = family.users|length %}
+
                 {{ user_count }} {{ user_count == 1 ? 'membro' : 'membri' }}
             </div>
             <div class="col-6 text-end">
-                {% set child_count = family.children|length %}
-                {{ child_count }} {{ child_count == 1 ? 'bimbo' : 'bimbi' }}
+                <a href="{{ path('children_list', {id: family.id}) }}">
+                    {{ child_count }} bimb*
+                </a>
             </div>
         </div>
-    </a>
+    </div>
     <div class="card-footer border-top-0 bg-transparent d-flex justify-content-between">
         <a href="{{ path('family_edit', {id: family.id}) }}" class="btn btn-link">
             <svg>

@@ -6,6 +6,7 @@ use App\Entity\Family;
 use App\Entity\Timepoints\Post;
 use App\Form\PostType;
 use App\Post\PostImageManagerInterface;
+use App\Security\Voter\EntityAction;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -19,7 +20,7 @@ class PostController extends AbstractController
 {
 
     #[Route(name: 'post_add', path: '/families/{id}/post', methods: ['GET', 'POST'])]
-    #[IsGranted('view', 'family')]
+    #[IsGranted(EntityAction::VIEW->value, 'family')]
     public function newPostAction(
         Request $request,
         Family $family,

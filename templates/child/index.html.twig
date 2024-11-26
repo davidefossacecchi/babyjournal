@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-lg-4 col-sm-6">
+            <h2>Bimb* della famiglia "{{ family.name }}"</h2>
+            {% if family.children|length == 0 %}
+                <twig:Alert type="info">
+                    Non ci sono bimb* in questa famiglia.
+                </twig:Alert>
+            {% else %}
+                <twig:ChildList family="{{ family }}" />
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

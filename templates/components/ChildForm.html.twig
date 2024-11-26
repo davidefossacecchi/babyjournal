@@ -1,0 +1,38 @@
+<div class="modal-dialog" {{ attributes }}>
+    <div class="modal-content">
+        {{ form_start(form, {
+            attr: {
+                'data-action': 'live#action:prevent',
+                'data-live-action-param': 'save',
+            }
+        }) }}
+            <div class="modal-body">
+                {%  for message in app.flashes('child:success') %}
+                    <twig:Alert type="success">
+                        {{ message }}
+                    </twig:Alert>
+                {% endfor %}
+
+                {%  for message in app.flashes('child:error') %}
+                    <twig:Alert type="danger">
+                        {{ message }}
+                    </twig:Alert>
+                {% endfor %}
+                <p>Stai per aggiungere un* bimb* alla famiglia "{{ this.family.name }}".</p>
+                {{ form_row(form.name) }}
+                {{ form_row(form.birthDate) }}
+            </div>
+            <div class="modal-footer d-flex justify-content-end border-top-0">
+                <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        data-action="live#action"
+                        data-live-action-param="close"
+                >
+                    Annulla
+                </button>
+                {{ form_widget(form.submit) }}
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>

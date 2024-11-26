@@ -15,6 +15,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
     AuthTokenType::PASSWORD_RESET->value => PasswordResetToken::class,
     AuthTokenType::EMAIL_VERIFICATION->value => EmailVerificationToken::class,
     AuthTokenType::FAMILY_INVITATION->value => FamilyInvitationToken::class,
+    AuthTokenType::CHILD_INVITATION->value => ChildInvitationToken::class,
 ])]
 abstract class AuthToken
 {
