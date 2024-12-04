@@ -1,5 +1,6 @@
 {% set user_count = family.users|length %}
 {% set child_count = family.children|length %}
+
 <div class="card mb-4" {{ attributes }}>
     <div class="card-body pb-0">
         <a class="card-title" href="{{ path('family_posts', {id: family.id}) }}">
@@ -18,12 +19,15 @@
         </div>
     </div>
     <div class="card-footer border-top-0 bg-transparent d-flex justify-content-between">
+        {% if is_granted('edit', family) %}
         <a href="{{ path('family_edit', {id: family.id}) }}" class="btn btn-link">
             <svg>
                 <use xlink:href="#edit"></use>
             </svg>
             Modifica
         </a>
+        {% endif %}
+        {% if is_granted('view', family) %}
         <button
                 class="btn btn-link"
                 data-action="live#action"
@@ -34,5 +38,6 @@
             </svg>
             Invita
         </button>
+        {% endif %}
     </div>
 </div>
