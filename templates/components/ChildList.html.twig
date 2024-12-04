@@ -1,6 +1,6 @@
 <div {{ attributes }}>
     {% for child in family.children %}
-        <twig:ChildCard child="{{ child }}" />
+        <twig:ChildCard child="{{ child }}" key="{{ child.id }}"/>
     {% endfor %}
     <div class="d-grid">
         <button

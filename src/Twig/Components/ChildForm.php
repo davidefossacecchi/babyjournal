@@ -36,6 +36,11 @@ class ChildForm extends AbstractController
         return $this->createForm(ChildType::class);
     }
 
+    private function getDataModelValue(): ?string
+    {
+        return 'norender|*';
+    }
+
     #[LiveAction]
     public function save(): void
     {
@@ -51,6 +56,7 @@ class ChildForm extends AbstractController
             $this->em->flush();
             $this->addFlash('child:success', 'Bimb* aggiunt* con successo');
             $this->emit('childAdded');
+            $this->resetForm();
         }
     }
 
