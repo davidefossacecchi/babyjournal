@@ -24,12 +24,12 @@
             <span></span>
         {% endif %}
         {% if child.hasPendingInvitations() %}
-            <span class="text-muted">
+            <button class="btn btn-link" disabled>
                 <svg>
                     <use xlink:href="#clock"></use>
                 </svg>
                 Invito in attesa
-            </span>
+            </button>
         {% elseif canInvite %}
         <button
             class="btn btn-link"
