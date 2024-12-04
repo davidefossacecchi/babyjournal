@@ -2,17 +2,25 @@
 {% set familyId = family.id %}
 {% block navbar %}
     <nav class="navbar sticky-top navbar-light bg-light">
-        <div class="container justify-content-end">
-            <a class="btn btn-primary" href="{{ path('create_child', {id: familyId}) }}">
-                + Bimbo
-            </a>
-            <a class="btn btn-primary" href="{{ path('family_create') }}">
-                + Famiglia
-            </a>
-            <a class="btn btn-primary" href="{{ path('logout') }}">
-                Logout
-            </a>
-
+        <div class="container justify-content-between">
+            <div>
+                <a href="{{ path('family_index') }}">
+                    <svg>
+                        <use xlink:href="#arrow-left"></use>
+                    </svg>
+                    Torna alle famiglie
+                </a>
+            </div>
+            <div>
+                {% if is_granted('edit', family) %}
+                    <a class="btn btn-primary" href="{{ path('create_child', {id: familyId}) }}">
+                        + Bimbo
+                    </a>
+                {% endif %}
+                <a class="btn btn-primary" href="{{ path('family_create') }}">
+                    + Famiglia
+                </a>
+            </div>
         </div>
     </nav>
 {% endblock %}

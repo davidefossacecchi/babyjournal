@@ -1,6 +1,8 @@
 {% set user_count = family.users|length %}
 {% set child_count = family.children|length %}
-
+{% set can_edit = is_granted('edit', family) %}
+{% set can_invite = is_granted('view', family) %}
+{% set css_class = can_invite and not can_edit ? 'justify-content-end' : 'justify-content-between' %}
 <div class="card mb-4" {{ attributes }}>
     <div class="card-body pb-0">
         <a class="card-title" href="{{ path('family_posts', {id: family.id}) }}">
@@ -18,7 +20,7 @@
             </div>
         </div>
     </div>
-    <div class="card-footer border-top-0 bg-transparent d-flex justify-content-between">
+    <div class="card-footer border-top-0 bg-transparent d-flex {{ css_class }}">
         {% if is_granted('edit', family) %}
         <a href="{{ path('family_edit', {id: family.id}) }}" class="btn btn-link">
             <svg>
